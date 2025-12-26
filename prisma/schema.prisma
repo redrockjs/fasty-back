@@ -9,34 +9,46 @@ datasource db {
 
 // Geo
 model Country {
-  id   String @id @default(uuid())
-  name String
+  id      String   @id @default(uuid())
+  name    String
+  address Address? @relation // 1:1 country:address
 }
 
 model Region {
-  id   String @id @default(uuid())
-  name String
+  id     String   @id @default(uuid())
+  name   String
+  region Address? @relation // 1:1 region:address
 }
 
 model City {
-  id   String @id @default(uuid())
+  id   String   @id @default(uuid())
   name String
+  city Address? @relation // 1:1 city:address
 }
 
 // Organization
 model Company {
-  id   String @id @default(uuid())
-  name String
+  id      String @id @default(uuid())
+  name    String
+  company User?  @relation() // 1:1 company:user
+
+  @@map("Companies")
 }
 
 model Department {
-  id   String @id @default(uuid())
-  name String
+  id         String @id @default(uuid())
+  name       String
+  department User?  @relation() // 1:1 company:department
+
+  @@map("Departments")
 }
 
 model Position {
-  id   String @id @default(uuid())
-  name String
+  id       String @id @default(uuid())
+  name     String
+  position User?  @relation() // 1:1 company:position
+
+  @@map("Positions")
 }
 
 // Base
@@ -45,27 +57,44 @@ model Phone {
   personal String
   work     String
   mobile   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 phone:user
+  userId   String @map("user_id") // N:1 phone:user
+
+  @@map("Phones")
 }
 
 model Address {
-  id         String @id @default(uuid())
-  countryId  String
-  regionId   String
-  cityId     String
+  id String @id @default(uuid())
+
+  countryId String  @unique @map("country_id") // 1:1 address:country
+  country   Country @relation(fields: [countryId], references: [id]) // 1:1 address:country
+
+  regionId String @unique @map("region_id") // 1:1 address:region
+  region   Region @relation(fields: [regionId], references: [id]) // 1:1 address:region
+
+  cityId String @unique @map("city_id") // 1:1 address:city
+  city   City   @relation(fields: [cityId], references: [id]) // 1:1 address:city
+
   street     String
   building   Int
   appartment Int
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 addreses:user
+  userId String @map("user_id") // N:1 addreses:user
 }
 
 model User {
-  id           String @id @default(uuid())
+  id           String     @id @default(uuid())
   firstName    String
   midName      String
   lastName     String
-  email        String @unique
-  companyId    Int
-  departmentId Int
-  positionId   Int
-  addressId    Int
-  phoneId      String
+  email        String     @unique
+  companyId    String     @unique @map("company_id") // 1:1 user:company
+  company      Company    @relation(fields: [companyId], references: [id]) // 1:1 user:company
+  departmentId String     @unique @map("department_id") // 1:1 user:department
+  department   Department @relation(fields: [departmentId], references: [id]) // 1:1 user:department
+  positionId   String     @unique @map("position_id") // 1:1 user:position
+  position     Position   @relation(fields: [positionId], references: [id]) // 1:1 user:position
+  addresses    Address[] // 1:N user:addresses
+  phones       Phone[] // 1:N user:phones
 }
