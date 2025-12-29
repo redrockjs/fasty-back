@@ -43,3 +43,7 @@ src/
  └── index.ts              # точка входа
 
 ```
+
+
+DB Schema
+https://app.chartdb.io/d/22cdc75504e0
