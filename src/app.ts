@@ -1,23 +1,31 @@
 import Fastify from 'fastify'
 import dotenv from 'dotenv';
-
+import companyRoutes from "./modules/company/company.route.js";
+import heartbeatRoutes from "./modules/heartbeat/heartbeat.route.js";
 
 dotenv.config();
 const APP_PORT = Number(process.env.APP_PORT);
 
-const app = Fastify({
+const fastify = Fastify({
   logger: true
 })
 
-app.get('/', function (request, reply) {
-  reply.send({hello: 'world'})
-})
+
+async function main() {
+
+  fastify.register(heartbeatRoutes, {prefix: 'api/heartbeat'})           // heartbeat routes
+  fastify.register(companyRoutes, {prefix: 'api/company'})               // company routes
+  //fastify.register(departmentRoutes, { prefix: 'api/department' })           // department routes
 
 
-app.listen({port: APP_PORT}, (err, address) => {
-  if (err) {
-    app.log.error(err)
-    process.exit(1)
+  try {
+    await fastify.listen({port: APP_PORT})
+    fastify.log.info(`Server listening at http://localhost:${APP_PORT}}`)
+
+  } catch (error) {
+    fastify.log.error(error)
+    process.exit(1);    // exit as failure
   }
-  app.log.info(`server listening on ${address}`)
-})
+}
+
+main().finally()
