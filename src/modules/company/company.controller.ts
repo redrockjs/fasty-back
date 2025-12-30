@@ -15,12 +15,13 @@ type CreateCompanyRequest = {
   name: string
 }
 
-export async function getAllCompaniesHandler(_: FastifyRequest, reply: FastifyReply) {
+export async function getAllCompaniesHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
     const result = await getAllCompanies()
+    request.log.info(result)
     reply.code(200).send(result)
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -34,11 +35,11 @@ export async function getCompanyByIdHandler(request: FastifyRequest<{
     //if (!id) reply.code(400).send({message: "City id is required"})
 
     const result = await getCompanyById(id);
-
+    request.log.info(result)
     reply.code(200)
     return result
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -49,6 +50,7 @@ export async function createCompanyHandler(request: FastifyRequest<{
   try {
     const {name} = request.body
     const result = await createCompany(name)
+    request.log.info(result)
     reply.code(201)
 
     return {
@@ -56,7 +58,7 @@ export async function createCompanyHandler(request: FastifyRequest<{
       result: result
     }
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -67,6 +69,7 @@ export async function deleteCompanyHandler(request: FastifyRequest<{
   try {
     const {id} = request.params
     const result = await deleteCompany(id)
+    request.log.info(result)
     reply.code(200)
 
     return {
@@ -74,7 +77,7 @@ export async function deleteCompanyHandler(request: FastifyRequest<{
       result: result
     }
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -88,7 +91,7 @@ export async function updateCompanyHandler(request: FastifyRequest<{
     const {name} = request.body
 
     const result = await updateCompany(id, name)
-
+    request.log.info(result)
     reply.code(200)
 
     return {
@@ -97,7 +100,7 @@ export async function updateCompanyHandler(request: FastifyRequest<{
     }
 
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }

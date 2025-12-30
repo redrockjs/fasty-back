@@ -5,4 +5,5 @@ export const ROUTES = {
   COMPANY: '/api/company',
   DEPARTMENT: '/api/department',
   POSITION: '/api/position',
+  USERS: '/api/users',
 }

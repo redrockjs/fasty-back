@@ -27,19 +27,40 @@ export async function getUserById(id: string) {
  * Create user in DB
  */
 export async function createUser(name: string) {
-  // const result = await prisma.user.create({
-  //   data: {
-  //     firstName: 'A',
-  //     midName: 'A',
-  //     lastName: 'A',
-  //     email: 'a@a.com',
-  //     company: 'A',
-  //     department: 'A',
-  //     position: 'A',
-  //     addresses: 'A',
-  //   }
-  // })
-  // return result
+  const result = await prisma.user.create({
+    data: {
+      firstName: 'Иван',
+      midName: 'Петрович',
+      lastName: 'Судаков',
+      email: 'ivan@astra.com',
+      company: {
+        create: {
+          name: 'Astra'
+        }
+      },
+      department: {
+        create: {
+          name: 'QA'
+        }
+      },
+      position: {
+        create: {
+          name: "QA-инженер"
+        }
+      },
+      addresses: {},
+      phones: {
+        create: [
+          {
+            mobile: "79991234567",
+            personal: "7555124567",
+            work: "73331234567"
+          }
+        ]
+      }
+    }
+  })
+  return result
 }
 
 /**

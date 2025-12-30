@@ -9,12 +9,13 @@ type CreateCityRequest = {
   name: string
 }
 
-export async function getAllCitiesHandler(_: FastifyRequest, reply: FastifyReply) {
+export async function getAllCitiesHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
     const result = await getAllCities()
+    request.log.info(result);
     reply.code(200).send(result)
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -26,11 +27,11 @@ export async function getCityByIdHandler(request: FastifyRequest<{ Params: GetCi
     //if (!id) reply.code(400).send({message: "City id is required"})
 
     const result = await getCityById(id);
-
+    request.log.info(result);
     reply.code(200)
     return result
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -39,6 +40,7 @@ export async function createCityHandler(request: FastifyRequest<{ Body: CreateCi
   try {
     const {name} = request.body
     const result = await createCity(name)
+    request.log.info(result);
     reply.code(201)
 
     return {
@@ -46,7 +48,7 @@ export async function createCityHandler(request: FastifyRequest<{ Body: CreateCi
       result: result
     }
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -55,6 +57,7 @@ export async function deleteCityHandler(request: FastifyRequest<{ Params: GetCit
   try {
     const {id} = request.params
     const result = await deleteCity(id)
+    request.log.info(result);
     reply.code(200)
 
     return {
@@ -62,7 +65,7 @@ export async function deleteCityHandler(request: FastifyRequest<{ Params: GetCit
       result: result
     }
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -76,7 +79,7 @@ export async function updateCityHandler(request: FastifyRequest<{
     const {name} = request.body
 
     const result = await updateCity(id, name)
-
+    request.log.info(result);
     reply.code(200)
 
     return {
@@ -85,7 +88,7 @@ export async function updateCityHandler(request: FastifyRequest<{
     }
 
   } catch (error) {
-    console.error(error);
+    request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }

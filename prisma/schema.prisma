@@ -47,12 +47,12 @@ model Position {
 
 // Base
 model Phone {
-  id       String @id @default(uuid())
-  personal String
-  work     String
-  mobile   String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 phone:user
-  userId   String @map("user_id") // N:1 phone:user
+  id       String  @id @default(uuid())
+  personal String?
+  work     String?
+  mobile   String?
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 phone:user
+  userId   String  @map("user_id") // N:1 phone:user
 
   @@map("Phones")
 }
@@ -60,11 +60,11 @@ model Phone {
 model Address {
   id String @id @default(uuid())
 
-  regionId String @unique @map("region_id") // 1:1 address:region
   region   Region @relation(fields: [regionId], references: [id]) // 1:1 address:region
+  regionId String @unique @map("region_id") // 1:1 address:region
 
-  cityId String @unique @map("city_id") // 1:1 address:city
   city   City   @relation(fields: [cityId], references: [id]) // 1:1 address:city
+  cityId String @unique @map("city_id") // 1:1 address:city
 
   street     String
   building   Int
@@ -75,17 +75,17 @@ model Address {
 }
 
 model User {
-  id           String     @id @default(uuid())
+  id           String      @id @default(uuid())
   firstName    String
   midName      String?
   lastName     String
-  email        String     @unique
-  companyId    String     @unique @map("company_id") // 1:1 user:company
-  company      Company    @relation(fields: [companyId], references: [id]) // 1:1 user:company
-  departmentId String     @unique @map("department_id") // 1:1 user:department
-  department   Department @relation(fields: [departmentId], references: [id]) // 1:1 user:department
-  positionId   String     @unique @map("position_id") // 1:1 user:position
-  position     Position   @relation(fields: [positionId], references: [id]) // 1:1 user:position
+  email        String      @unique
+  company      Company?    @relation(fields: [companyId], references: [id]) // 1:1 user:company
+  companyId    String?     @unique @map("company_id") // 1:1 user:company
+  department   Department? @relation(fields: [departmentId], references: [id]) // 1:1 user:department
+  departmentId String?     @unique @map("department_id") // 1:1 user:department
+  position     Position?   @relation(fields: [positionId], references: [id]) // 1:1 user:position
+  positionId   String?     @unique @map("position_id") // 1:1 user:position
   addresses    Address[] // 1:N user:addresses
   phones       Phone[] // 1:N user:phones
 }
