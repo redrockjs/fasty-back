@@ -5,6 +5,22 @@ const city = {
   name: {type: 'string'},
 }
 
+export const allCitySchema = {
+  schema: {
+    description: "Get all cities",
+    tags: ['city'],
+    response: {
+      200: {
+        type: "array",
+        items: {
+          type: 'object',
+          properties: city
+        }
+      },
+      500: serverError
+    }
+  }
+}
 
 export const singleCitySchema = {
   schema: {
@@ -32,20 +48,75 @@ export const singleCitySchema = {
   }
 }
 
-
-export const allCitySchema = {
+export const createCitySchema = {
   schema: {
-    description: "Get all cities",
+    description: "Create city",
+    tags: ['city'],
+    required: ['name'],
+    additionalProperties: false,
+    type: 'object',
+    body: {
+      properties: {
+        name: {type: 'string'},
+      }
+    },
+    response: {
+      201: {
+        type: 'object',
+        properties: {
+          message: { type: 'string' },
+          result: {
+            id: {type: 'string'},
+            name: {type: 'string'},
+          }
+        }
+      }
+    }
+  }
+}
+
+export const deleteCitySchema = {
+  schema: {
+    description: "Delete city",
     tags: ['city'],
     response: {
       200: {
-        type: "array",
-        items: {
-          type: 'object',
-          properties: city
+        type: 'object',
+        properties: {
+          message: { type: 'string' },
+          result: {
+            id: {type: 'string'},
+            name: {type: 'string'},
+          }
         }
-      },
-      500: serverError
+      }
+    }
+  }
+}
+
+export const updateCitySchema = {
+  schema: {
+    description: "Update city",
+    tags: ['city'],
+    required: ['name'],
+    additionalProperties: false,
+    type: 'object',
+    body: {
+      properties: {
+        name: {type: 'string'},
+      }
+    },
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          message: { type: 'string' },
+          result: {
+            id: {type: 'string'},
+            name: {type: 'string'},
+          }
+        }
+      }
     }
   }
 }
