@@ -1,20 +1,20 @@
 import {serverError} from "../../shared/errors/errorHandler.js";
 
-const city = {
+const position = {
   id: {type: 'string'},
   name: {type: 'string'},
 }
 
-export const allCitiesSchema = {
+export const allPositionsSchema = {
   schema: {
-    description: "Get all cities",
-    tags: ['city'],
+    description: "Get all positions",
+    tags: ['position'],
     response: {
       200: {
         type: "array",
         items: {
           type: 'object',
-          properties: city
+          properties: position
         }
       },
       500: serverError
@@ -22,10 +22,10 @@ export const allCitiesSchema = {
   }
 }
 
-export const singleCitySchema = {
+export const singlePositionSchema = {
   schema: {
-    description: "Get a single city",
-    tags: ["city"],
+    description: "Get a single position",
+    tags: ["position"],
     params: {
       type: "object",
       properties: {
@@ -48,10 +48,10 @@ export const singleCitySchema = {
   }
 }
 
-export const createCitySchema = {
+export const createPositionSchema = {
   schema: {
-    description: "Create city",
-    tags: ['city'],
+    description: "Create position",
+    tags: ['position'],
     required: ['name'],
     additionalProperties: false,
     type: 'object',
@@ -75,10 +75,10 @@ export const createCitySchema = {
   }
 }
 
-export const deleteCitySchema = {
+export const deletePositionSchema = {
   schema: {
-    description: "Delete city",
-    tags: ['city'],
+    description: "Delete position",
+    tags: ['position'],
     response: {
       200: {
         type: 'object',
@@ -94,10 +94,10 @@ export const deleteCitySchema = {
   }
 }
 
-export const updateCitySchema = {
+export const updatePositionSchema = {
   schema: {
-    description: "Update city",
-    tags: ['city'],
+    description: "Update position",
+    tags: ['position'],
     required: ['name'],
     additionalProperties: false,
     type: 'object',

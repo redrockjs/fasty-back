@@ -7,7 +7,7 @@ import {
   updateCityHandler
 } from "./city.controller.js";
 import {
-  allCitySchema,
+  allCitiesSchema,
   singleCitySchema,
   createCitySchema,
   updateCitySchema,
@@ -17,7 +17,7 @@ import {
 
 async function cityRoutes(fastify: FastifyInstance) {
   // Get All items
-  fastify.get('/', allCitySchema, getAllCitiesHandler)
+  fastify.get('/', allCitiesSchema, getAllCitiesHandler)
   // Get item by ID
   fastify.get('/:id', singleCitySchema, getCityByIdHandler)
   // Create item
