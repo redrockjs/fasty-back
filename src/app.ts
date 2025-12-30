@@ -1,10 +1,11 @@
 import Fastify from 'fastify'
 import dotenv from 'dotenv';
+import {ROUTES} from "./shared/const/routes.js";
 import companyRoutes from "./modules/company/company.route.js";
 import heartbeatRoutes from "./modules/heartbeat/heartbeat.route.js";
 import cityRoutes from "./modules/city/city.route.js";
-import {ROUTES} from "./shared/const/routes.js";
 import regionRoutes from "./modules/region/region.route.js";
+import departmentRoutes from "./modules/department/department.route.js";
 
 dotenv.config();
 const APP_PORT = Number(process.env.APP_PORT);
@@ -15,13 +16,11 @@ const fastify = Fastify({
 
 
 async function main() {
-
   fastify.register(heartbeatRoutes, {prefix: ROUTES.HEARTBEAT})           // heartbeat routes
   fastify.register(cityRoutes, {prefix: ROUTES.CITY})                     // city routes
   fastify.register(regionRoutes, {prefix: ROUTES.REGION})                 // region routes
   fastify.register(companyRoutes, {prefix: ROUTES.COMPANY})               // company routes
-  //fastify.register(departmentRoutes, { prefix: 'api/department' })      // department routes
-
+  fastify.register(departmentRoutes, { prefix: ROUTES.DEPARTMENT })       // department routes
 
   try {
     await fastify.listen({port: APP_PORT})

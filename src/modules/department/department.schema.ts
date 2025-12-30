@@ -1,20 +1,20 @@
 import {serverError} from "../../shared/errors/errorHandler.js";
 
-const company = {
+const department = {
   id: {type: 'string'},
   name: {type: 'string'},
 }
 
-export const allCompaniesSchema = {
+export const allDepartmentsSchema = {
   schema: {
-    description: "Get all companies",
-    tags: ['company'],
+    description: "Get all departments",
+    tags: ['department'],
     response: {
       200: {
         type: "array",
         items: {
           type: 'object',
-          properties: company
+          properties: department
         }
       },
       500: serverError
@@ -22,10 +22,10 @@ export const allCompaniesSchema = {
   }
 }
 
-export const singleCompanySchema = {
+export const singleDepartmentSchema = {
   schema: {
-    description: "Get a single company",
-    tags: ["company"],
+    description: "Get a single department",
+    tags: ["department"],
     params: {
       type: "object",
       properties: {
@@ -48,10 +48,10 @@ export const singleCompanySchema = {
   }
 }
 
-export const createCompanySchema = {
+export const createDepartmentSchema = {
   schema: {
-    description: "Create company",
-    tags: ['company'],
+    description: "Create department",
+    tags: ['department'],
     required: ['name'],
     additionalProperties: false,
     type: 'object',
@@ -75,10 +75,10 @@ export const createCompanySchema = {
   }
 }
 
-export const deleteCompanySchema = {
+export const deleteDepartmentSchema = {
   schema: {
-    description: "Delete company",
-    tags: ['company'],
+    description: "Delete department",
+    tags: ['department'],
     response: {
       200: {
         type: 'object',
@@ -94,10 +94,10 @@ export const deleteCompanySchema = {
   }
 }
 
-export const updateCompanySchema = {
+export const updateDepartmentSchema = {
   schema: {
-    description: "Update company",
-    tags: ['company'],
+    description: "Update department",
+    tags: ['department'],
     required: ['name'],
     additionalProperties: false,
     type: 'object',
