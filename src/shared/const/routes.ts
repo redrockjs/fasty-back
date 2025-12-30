@@ -3,4 +3,5 @@ export const ROUTES = {
   CITY: '/api/city',
   REGION: '/api/region',
   COMPANY: '/api/company',
+  DEPARTMENT: '/api/department',
 }

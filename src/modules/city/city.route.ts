@@ -1,16 +1,21 @@
 import type {FastifyInstance} from "fastify";
 import {
-  createCityHandler,
-  deleteCityHandler,
   getAllCitiesHandler,
   getCityByIdHandler,
+  createCityHandler,
+  deleteCityHandler,
   updateCityHandler
 } from "./city.controller.js";
-import {allCitySchema, createCitySchema, deleteCitySchema, singleCitySchema, updateCitySchema} from "./city.schema.js";
+import {
+  allCitySchema,
+  singleCitySchema,
+  createCitySchema,
+  updateCitySchema,
+  deleteCitySchema
+} from "./city.schema.js";
 
 
 async function cityRoutes(fastify: FastifyInstance) {
-
   // Get All items
   fastify.get('/', allCitySchema, getAllCitiesHandler)
   // Get item by ID
