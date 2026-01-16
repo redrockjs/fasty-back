@@ -1,6 +1,6 @@
 import {serverError} from "../../shared/errors/errorHandler.js";
 
-const region = {
+export const regionSchema = {
   id: {type: 'string'},
   name: {type: 'string'},
 }
@@ -14,7 +14,7 @@ export const allRegionsSchema = {
         type: "array",
         items: {
           type: 'object',
-          properties: region
+          properties: regionSchema
         }
       },
       500: serverError

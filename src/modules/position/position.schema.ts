@@ -1,6 +1,6 @@
 import {serverError} from "../../shared/errors/errorHandler.js";
 
-const position = {
+export const positionSchema = {
   id: {type: 'string'},
   name: {type: 'string'},
 }
@@ -14,7 +14,7 @@ export const allPositionsSchema = {
         type: "array",
         items: {
           type: 'object',
-          properties: position
+          properties: positionSchema
         }
       },
       500: serverError

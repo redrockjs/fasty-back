@@ -6,14 +6,13 @@ import {
   updateUser,
   deleteUser
 } from "./user.service.js";
+import type {TUser} from "./user.types.js";
 
 type GetUserRequest = {
   id: string
 }
 
-type CreateUserRequest = {
-  name: string
-}
+type CreateUserRequest = TUser
 
 export async function getAllUsersHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
@@ -44,8 +43,8 @@ export async function getUserByIdHandler(request: FastifyRequest<{ Params: GetUs
 
 export async function createUserHandler(request: FastifyRequest<{ Body: CreateUserRequest }>, reply: FastifyReply) {
   try {
-    const {name} = request.body
-    const result = await createUser(name)
+    const user = request.body
+    const result = await createUser(user)
     request.log.info(result)
     reply.code(201)
 
@@ -82,7 +81,7 @@ export async function updateUserHandler(request: FastifyRequest<{
 }>, reply: FastifyReply) {
   try {
     const {id} = request.params
-    const {name} = request.body
+    const {firstName: name} = request.body
 
     const result = await updateUser(id, name)
     request.log.info(result)
@@ -97,3 +96,5 @@ export async function updateUserHandler(request: FastifyRequest<{
     reply.code(500).send({message: "Something went wrong"});
   }
 }
+
+export type {GetUserRequest as TCreateUser}

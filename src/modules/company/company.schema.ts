@@ -1,6 +1,6 @@
 import {serverError} from "../../shared/errors/errorHandler.js";
 
-const company = {
+export const companySchema = {
   id: {type: 'string'},
   name: {type: 'string'},
 }
@@ -14,7 +14,7 @@ export const allCompaniesSchema = {
         type: "array",
         items: {
           type: 'object',
-          properties: company
+          properties: companySchema
         }
       },
       500: serverError

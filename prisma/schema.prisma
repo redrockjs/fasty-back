@@ -23,7 +23,7 @@ model City {
 // Organization
 model Company {
   id      String @id @default(uuid())
-  name    String
+  name    String @unique
   company User?  @relation() // 1:1 company:user
 
   @@map("Companies")

@@ -7,13 +7,14 @@ import {
   deleteUserHandler,
   updateUserHandler
 } from './user.controller.js'
+import {allUsersSchema, createUserSchema, deleteUserSchema, singleUserSchema, updateUserSchema} from "./user.schema.js";
 
 async function userRoutes(fastify: FastifyInstance) {
-  fastify.get('/', {}, getAllUsersHandler)
-  fastify.get('/:id', {}, getUserByIdHandler)
-  fastify.post('/', {}, createUserHandler)
-  fastify.delete('/:id', {}, deleteUserHandler)
-  fastify.put('/:id', {}, updateUserHandler)
+  fastify.get('/', allUsersSchema, getAllUsersHandler)
+  fastify.get('/:id', singleUserSchema, getUserByIdHandler)
+  fastify.post('/', createUserSchema, createUserHandler)
+  fastify.delete('/:id', deleteUserSchema, deleteUserHandler)
+  fastify.put('/:id', updateUserSchema, updateUserHandler)
 }
 
 export default userRoutes

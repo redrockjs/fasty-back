@@ -1,6 +1,6 @@
 import {serverError} from "../../shared/errors/errorHandler.js";
 
-const department = {
+export const departmentSchema = {
   id: {type: 'string'},
   name: {type: 'string'},
 }
@@ -14,7 +14,7 @@ export const allDepartmentsSchema = {
         type: "array",
         items: {
           type: 'object',
-          properties: department
+          properties: departmentSchema
         }
       },
       500: serverError
@@ -64,7 +64,7 @@ export const createDepartmentSchema = {
       201: {
         type: 'object',
         properties: {
-          message: { type: 'string' },
+          message: {type: 'string'},
           result: {
             id: {type: 'string'},
             name: {type: 'string'},
@@ -83,7 +83,7 @@ export const deleteDepartmentSchema = {
       200: {
         type: 'object',
         properties: {
-          message: { type: 'string' },
+          message: {type: 'string'},
           result: {
             id: {type: 'string'},
             name: {type: 'string'},
@@ -110,7 +110,7 @@ export const updateDepartmentSchema = {
       200: {
         type: 'object',
         properties: {
-          message: { type: 'string' },
+          message: {type: 'string'},
           result: {
             id: {type: 'string'},
             name: {type: 'string'},

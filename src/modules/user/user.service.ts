@@ -1,4 +1,5 @@
 import {prisma} from "../../shared/config/prisma.js";
+import type {TUser} from "./user.types.js";
 
 /**
  * Get all users from DB
@@ -26,38 +27,38 @@ export async function getUserById(id: string) {
 /**
  * Create user in DB
  */
-export async function createUser(name: string) {
+export async function createUser({...props}: TUser) {
+
+  const {firstName, midName, lastName, email, company, department, position, addresses, phones} = props
+
   const result = await prisma.user.create({
     data: {
-      firstName: 'Иван',
-      midName: 'Петрович',
-      lastName: 'Судаков',
-      email: 'ivan@astra.com',
+      firstName,
+      midName,
+      lastName,
+      email,
       company: {
+        connectOrCreate: {
+          where: {
+            name: company,
+          }
+        },
         create: {
-          name: 'Astra'
+          name: company,
         }
       },
       department: {
         create: {
-          name: 'QA'
+          name: department,
         }
       },
       position: {
         create: {
-          name: "QA-инженер"
+          name: position,
         }
       },
       addresses: {},
-      phones: {
-        create: [
-          {
-            mobile: "79991234567",
-            personal: "7555124567",
-            work: "73331234567"
-          }
-        ]
-      }
+      phones: {}
     }
   })
   return result
