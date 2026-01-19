@@ -11,7 +11,7 @@ import {allUsersSchema, createUserSchema, deleteUserSchema, singleUserSchema, up
 
 async function userRoutes(fastify: FastifyInstance) {
   fastify.get('/', allUsersSchema, getAllUsersHandler)
-  fastify.get('/:id', singleUserSchema, getUserByIdHandler)
+  fastify.get('/:id', /*singleUserSchema*/ {}, getUserByIdHandler)
   fastify.post('/', createUserSchema, createUserHandler)
   fastify.delete('/:id', deleteUserSchema, deleteUserHandler)
   fastify.put('/:id', updateUserSchema, updateUserHandler)
