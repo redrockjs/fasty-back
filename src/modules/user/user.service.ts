@@ -15,10 +15,13 @@ export async function getAllUsers() {
  * Get user by ID from DB
  */
 export async function getUserById(id: string) {
-  const user = prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id: id,
-    }
+    },
+    include: {
+      company: true
+    },
   })
 
   return user;
@@ -41,20 +44,30 @@ export async function createUser({...props}: TUser) {
         connectOrCreate: {
           where: {
             name: company,
+          },
+          create: {
+            name: company
           }
-        },
-        create: {
-          name: company,
         }
       },
       department: {
-        create: {
-          name: department,
+        connectOrCreate: {
+          where: {
+            name: department,
+          },
+          create: {
+            name: department
+          }
         }
       },
       position: {
-        create: {
-          name: position,
+        connectOrCreate: {
+          where: {
+            name: position
+          },
+          create: {
+            name: position
+          }
         }
       },
       addresses: {},

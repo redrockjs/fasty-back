@@ -31,7 +31,7 @@ model Company {
 
 model Department {
   id         String @id @default(uuid())
-  name       String
+  name       String @unique
   department User?  @relation() // 1:1 company:department
 
   @@map("Departments")
@@ -39,7 +39,7 @@ model Department {
 
 model Position {
   id       String @id @default(uuid())
-  name     String
+  name     String @unique
   position User?  @relation() // 1:1 company:position
 
   @@map("Positions")
@@ -51,8 +51,7 @@ model Phone {
   personal String?
   work     String?
   mobile   String?
-  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 phone:user
-  userId   String  @map("user_id") // N:1 phone:user
+  user     User?   @relation() // 1:1 phone:user
 
   @@map("Phones")
 }
@@ -87,5 +86,6 @@ model User {
   position     Position?   @relation(fields: [positionId], references: [id]) // 1:1 user:position
   positionId   String?     @unique @map("position_id") // 1:1 user:position
   addresses    Address[] // 1:N user:addresses
-  phones       Phone[] // 1:N user:phones
+  phones       Phone?      @relation(fields: [phonesId], references: [id]) // 1:1 user:phone
+  phonesId     String?     @unique @map("phones_id") // 1:1 user:position
 }
