@@ -13,6 +13,7 @@ type GetUserRequest = {
 }
 
 type CreateUserRequest = TUser
+type UpdateUserRequest = TUser
 
 export async function getAllUsersHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
@@ -77,18 +78,18 @@ export async function deleteUserHandler(request: FastifyRequest<{ Params: GetUse
 
 export async function updateUserHandler(request: FastifyRequest<{
   Params: GetUserRequest,
-  Body: CreateUserRequest
+  Body: UpdateUserRequest
 }>, reply: FastifyReply) {
   try {
-    const {id} = request.params
-    const {firstName: name} = request.body
+    const {id:requestId} = request.params
+    const user = request.body
 
-    const result = await updateUser(id, name)
+    const result = await updateUser({requestId, ...user})
     request.log.info(result)
     reply.code(200)
 
     return {
-      message: `Successfully updated user with id: ${id}`,
+      message: `Successfully updated user with id: ${requestId}`,
       result: result
     }
   } catch (error) {

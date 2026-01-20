@@ -15,13 +15,19 @@ type TAddress = {
   city: string
   street: string
   building: string
-  appartment: string
+  apartment: string
 }
 
 type TPhone = {
-  mobile: string
-  personal: string
-  work: string
+  number: string
+  type: PhoneType
+}
+
+enum PhoneType {
+  WORK = "WORK",
+  MOBILE = "MOBILE",
+  HOME = "HOME",
+  OTHER = "OTHER",
 }
 
 export type {TUser}

@@ -9,15 +9,15 @@ datasource db {
 
 // Geo
 model Region {
-  id     String   @id @default(uuid())
-  name   String
-  region Address? @relation // 1:1 region:address
+  id     String    @id @default(uuid())
+  name   String    @unique
+  region Address[] // 1:N region:address
 }
 
 model City {
-  id   String   @id @default(uuid())
-  name String
-  city Address? @relation // 1:1 city:address
+  id   String    @id @default(uuid())
+  name String    @unique
+  city Address[] // 1:N city:address
 }
 
 // Organization
@@ -47,27 +47,35 @@ model Position {
 
 // Base
 model Phone {
-  id       String  @id @default(uuid())
-  personal String?
-  work     String?
-  mobile   String?
-  user     User?   @relation() // 1:1 phone:user
+  id     String    @id @default(uuid())
+  number String
+  type   PhoneType
+  userId String
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 1:N phone:user
 
+  @@unique([userId, type])
   @@map("Phones")
+}
+
+enum PhoneType {
+  WORK
+  MOBILE
+  HOME
+  OTHER
 }
 
 model Address {
   id String @id @default(uuid())
 
   region   Region @relation(fields: [regionId], references: [id]) // 1:1 address:region
-  regionId String @unique @map("region_id") // 1:1 address:region
+  regionId String @map("region_id") // 1:1 address:region
 
   city   City   @relation(fields: [cityId], references: [id]) // 1:1 address:city
-  cityId String @unique @map("city_id") // 1:1 address:city
+  cityId String @map("city_id") // 1:1 address:city
 
-  street     String
-  building   Int
-  appartment Int
+  street    String
+  building  Int
+  apartment Int
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 addreses:user
   userId String @map("user_id") // N:1 addreses:user
@@ -86,6 +94,5 @@ model User {
   position     Position?   @relation(fields: [positionId], references: [id]) // 1:1 user:position
   positionId   String?     @unique @map("position_id") // 1:1 user:position
   addresses    Address[] // 1:N user:addresses
-  phones       Phone?      @relation(fields: [phonesId], references: [id]) // 1:1 user:phone
-  phonesId     String?     @unique @map("phones_id") // 1:1 user:position
+  phones       Phone[] // 1:N user:phones
 }

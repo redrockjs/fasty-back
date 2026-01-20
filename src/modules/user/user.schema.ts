@@ -17,29 +17,24 @@ const userSchema = {
   position: {type: 'string'},
   addresses: {},
   phones: {
-    type: "object",
-    properties: {
-      create: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            mobile: {
-              type: "string",
-              pattern: "^[0-9]{10,15}$"
-            },
-            personal: {
-              type: "string",
-              pattern: "^[0-9]{10,15}$"
-            },
-            work: {
-              type: "string",
-              pattern: "^[0-9]{10,15}$"
-            }
-          },
-        }
-      }
-    }
+    // type: "object",
+    // properties: {
+    //   create: {
+    //     type: "array",
+    //     items: {
+    //       type: "object",
+    //       properties: {
+    //         number: {
+    //           type: "string",
+    //           pattern: "^[0-9]{10,15}$"
+    //         },
+    //         type: {
+    //           type: "string",
+    //         }
+    //       },
+    //     }
+    //   }
+    // }
   }
 }
 
@@ -49,11 +44,11 @@ export const allUsersSchema = {
     tags: ['user'],
     response: {
       200: {
-        type: "array",
-        items: {
-          type: 'object',
-          properties: userSchema
-        }
+        //type: "array",
+        // items: {
+        //   type: 'object',
+        //   properties: userSchema
+        // }
       },
       500: serverError
     }
@@ -73,7 +68,7 @@ export const singleUserSchema = {
     },
     response: {
       200: {
-        properties: userSchema
+        //properties: userSchema
       },
       404: {
         type: 'object',
@@ -126,18 +121,18 @@ export const updateUserSchema = {
   schema: {
     description: "Update user",
     tags: ['user'],
-    type: 'object',
-    body: {
-      properties: userSchema
-    },
-    response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: userSchema
-        }
-      }
-    }
+    // type: 'object',
+    // body: {
+    //   properties: userSchema
+    // },
+    // response: {
+    //   200: {
+    //     type: 'object',
+    //     properties: {
+    //       message: { type: 'string' },
+    //       result: userSchema
+    //     }
+    //   }
+    // }
   }
 }
