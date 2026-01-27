@@ -17,16 +17,10 @@
   },
   "devDependencies": {
     "@prisma/client": "^7.2.0",
-    "@swc/jest": "^0.2.39",
-    "@types/jest": "^30.0.0",
     "@types/node": "^25.0.10",
-    "@types/supertest": "^6.0.3",
     "dotenv": "^17.2.3",
     "eslint": "^9.39.2",
-    "jest": "^30.2.0",
     "prisma": "^7.2.0",
-    "supertest": "^7.2.2",
-    "ts-jest": "^29.4.6",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
