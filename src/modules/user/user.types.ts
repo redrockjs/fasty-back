@@ -1,12 +1,13 @@
 type TUser = {
+  id: string,
   firstName: string
-  midName: string
+  midName: string | null
   lastName: string
   email: string
   company: string
   department: string
   position: string
-  addresses: TAddress
+  addresses: TAddress[]
   phones: TPhone[]
 }
 
@@ -19,15 +20,15 @@ type TAddress = {
 }
 
 type TPhone = {
-  number: string
-  type: PhoneType
+  phone: string
+  type: TPhoneType
 }
 
-enum PhoneType {
+enum TPhoneType {
   WORK = "WORK",
   MOBILE = "MOBILE",
   HOME = "HOME",
   OTHER = "OTHER",
 }
 
-export type {TUser}
+export type {TUser, TPhoneType}

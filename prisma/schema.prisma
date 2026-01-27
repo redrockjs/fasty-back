@@ -24,7 +24,7 @@ model City {
 model Company {
   id      String @id @default(uuid())
   name    String @unique
-  company User?  @relation() // 1:1 company:user
+  company User[] // 1:N company:user
 
   @@map("Companies")
 }
@@ -32,7 +32,7 @@ model Company {
 model Department {
   id         String @id @default(uuid())
   name       String @unique
-  department User?  @relation() // 1:1 company:department
+  department User[] // 1:N company:department
 
   @@map("Departments")
 }
@@ -40,7 +40,7 @@ model Department {
 model Position {
   id       String @id @default(uuid())
   name     String @unique
-  position User?  @relation() // 1:1 company:position
+  position User[] // 1:N company:position
 
   @@map("Positions")
 }
@@ -48,7 +48,7 @@ model Position {
 // Base
 model Phone {
   id     String    @id @default(uuid())
-  number String
+  phone  String
   type   PhoneType
   userId String
   user   User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 1:N phone:user
@@ -82,17 +82,21 @@ model Address {
 }
 
 model User {
-  id           String      @id @default(uuid())
-  firstName    String
-  midName      String?
-  lastName     String
-  email        String      @unique
-  company      Company?    @relation(fields: [companyId], references: [id]) // 1:1 user:company
-  companyId    String?     @unique @map("company_id") // 1:1 user:company
-  department   Department? @relation(fields: [departmentId], references: [id]) // 1:1 user:department
-  departmentId String?     @unique @map("department_id") // 1:1 user:department
-  position     Position?   @relation(fields: [positionId], references: [id]) // 1:1 user:position
-  positionId   String?     @unique @map("position_id") // 1:1 user:position
-  addresses    Address[] // 1:N user:addresses
-  phones       Phone[] // 1:N user:phones
+  id        String  @id @default(uuid())
+  firstName String
+  midName   String?
+  lastName  String
+  email     String  @unique
+
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Restrict) // N:1 user:company
+  companyId String  @map("company_id") // N:1 user:company
+
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict) // N:1 user:department
+  departmentId String     @map("department_id") // 1:1 user:department
+
+  position   Position @relation(fields: [positionId], references: [id], onDelete: Restrict) // N:1 user:position
+  positionId String   @map("position_id") // 1:1 user:position
+
+  addresses Address[] // 1:N user:addresses
+  phones    Phone[] // 1:N user:phones
 }

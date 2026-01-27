@@ -1,5 +1,6 @@
 import {prisma} from "../../shared/config/prisma.js";
 import type {TUser} from "./user.types.js";
+import {normalizeUser} from "./user.mapper.js";
 
 /**
  * Get all users from DB
@@ -10,7 +11,6 @@ export async function getAllUsers() {
   return users;
 }
 
-
 /**
  * Get user by ID from DB
  */
@@ -20,11 +20,25 @@ export async function getUserById(id: string) {
       id: id,
     },
     include: {
-      company: true
+      company: true,
+      department: true,
+      position: true,
+      addresses: {
+        include: {
+          region: true,
+          city: true,
+        }
+      },
+      phones: true,
     },
   })
 
-  return user;
+
+  if (!user) {
+    return null
+  }
+
+  return normalizeUser(user);
 }
 
 /**
@@ -72,25 +86,25 @@ export async function createUser({...props}: TUser) {
       },
       // --- address ---
       addresses: {
-        create: [
-          {
-            street: addresses.street,
-            building: Number(addresses.building),
-            apartment: Number(addresses.apartment),
-            region: {
-              connectOrCreate: {
-                where: {name: addresses.region},
-                create: {name: addresses.region},
-              },
-            },
-            city: {
-              connectOrCreate: {
-                where: {name: addresses.city},
-                create: {name: addresses.city},
-              },
+        create: addresses.map(address => ({
+          street: address.street,
+          building: Number(address.building),
+          apartment: Number(address.apartment),
+
+          region: {
+            connectOrCreate: {
+              where: { name: address.region },
+              create: { name: address.region },
             },
           },
-        ],
+
+          city: {
+            connectOrCreate: {
+              where: { name: address.city },
+              create: { name: address.city },
+            },
+          },
+        })),
       },
       phones: {
         create: phones
@@ -157,38 +171,36 @@ export async function updateUser({...props}: { requestId: string } & TUser) {
     if (addresses) {
       data.addresses = {
         deleteMany: {},
-        create: [
-          {
-            street: addresses.street,
-            building: Number(addresses.building),
-            apartment: Number(addresses.apartment),
-            region: {
-              connectOrCreate: {
-                where: {name: addresses.region},
-                create: {name: addresses.region},
-              },
-            },
-            city: {
-              connectOrCreate: {
-                where: {name: addresses.city},
-                create: {name: addresses.city},
-              },
+        create: addresses.map(address => ({
+          street: address.street,
+          building: Number(address.building),
+          apartment: Number(address.apartment),
+          region: {
+            connectOrCreate: {
+              where: { name: address.region },
+              create: { name: address.region },
             },
           },
-        ],
-      }
-    }
-
-    if (phones) {
-      data.phones = {
-        deleteMany: {},
-        create: phones.map((p) => ({
-          number: p.number,
-          type: p.type,
+          city: {
+            connectOrCreate: {
+              where: { name: address.city },
+              create: { name: address.city },
+            },
+          },
         })),
       }
     }
 
+
+    if (phones) {
+      data.phones = {
+        deleteMany: {},
+        create: phones.map(phone => ({
+          type: phone.type,
+          phone: phone.phone,
+        })),
+      }
+    }
 
     return tx.user.update({
       where: {id: requestId},
