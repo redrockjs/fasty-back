@@ -6,4 +6,5 @@ export const ROUTES = {
   DEPARTMENT: '/api/department',
   POSITION: '/api/position',
   USER: '/api/user',
+  API_DOCS: '/api/docs',
 }
