@@ -1,4 +1,4 @@
-import Fastify from 'fastify'
+import Fastify, {type FastifyServerOptions} from 'fastify'
 import dotenv from 'dotenv';
 import {ROUTES} from "./shared/const/routes.js";
 import heartbeatRoutes from "./modules/heartbeat/heartbeat.route.js";
@@ -10,13 +10,13 @@ import positionRoutes from "./modules/position/position.route.js";
 import userRoutes from "./modules/user/user.route.js";
 
 dotenv.config();
-const APP_PORT = Number(process.env.APP_PORT);
 
-const fastify = Fastify({
-  logger: true
-})
+export function buildApp(options: Partial<FastifyServerOptions> = {}) {
+  const fastify = Fastify({
+    logger: true,   // можно отключать в тестах
+    ...options
+  })
 
-async function main() {
   fastify.register(heartbeatRoutes, {prefix: ROUTES.HEARTBEAT})           // heartbeat routes
   fastify.register(cityRoutes, {prefix: ROUTES.CITY})                     // city routes
   fastify.register(regionRoutes, {prefix: ROUTES.REGION})                 // region routes
@@ -25,14 +25,5 @@ async function main() {
   fastify.register(positionRoutes, {prefix: ROUTES.POSITION})             // position routes
   fastify.register(userRoutes, {prefix: ROUTES.USER})                    // user routes
 
-  try {
-    await fastify.listen({port: APP_PORT})
-    fastify.log.info(`Server listening at http://localhost:${APP_PORT}}`)
-
-  } catch (error) {
-    fastify.log.error(error)
-    process.exit(1);    // exit as failure
-  }
+  return fastify;
 }
-
-main().finally()
