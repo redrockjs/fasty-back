@@ -36,7 +36,7 @@ export function buildApp(options: Partial<FastifyServerOptions> = {}) {
   fastify.register(companyRoutes, {prefix: ROUTES.COMPANY})               // company routes
   fastify.register(departmentRoutes, {prefix: ROUTES.DEPARTMENT})         // department routes
   fastify.register(positionRoutes, {prefix: ROUTES.POSITION})             // position routes
-  fastify.register(userRoutes, {prefix: ROUTES.USER})                    // user routes
+  fastify.register(userRoutes, {prefix: ROUTES.USER})                     // user routes
 
   return fastify;
 }
