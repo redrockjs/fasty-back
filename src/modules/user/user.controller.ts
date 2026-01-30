@@ -97,5 +97,3 @@ export async function updateUserHandler(request: FastifyRequest<{
     reply.code(500).send({message: "Something went wrong"});
   }
 }
-
-export type {GetUserRequest as TCreateUser}

@@ -13,7 +13,7 @@ const serverHttpAcceptSchema = {
 
 const positionSchema = {
   type: "object",
-  required: ["id", "name"],
+  required: ["name"],
   properties: {
     id: {type: "string", format: "uuid"},
     name: {type: "string", minLength: 1}

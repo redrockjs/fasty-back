@@ -2,7 +2,7 @@ import type {City, Company, Department, Phone, Position, Region, User, Address} 
 import type {TPhoneType, TUser} from "./user.types.js";
 
 type UserMapper = User & {
-  company: Company | null
+  company: Company
   department: Department
   position: Position
   addresses: AddressMapper[]
@@ -22,7 +22,7 @@ export function normalizeUser(user: UserMapper): TUser {
     midName: user.midName,
     lastName: user.lastName,
     email: user.email,
-    company: user.company ? user.company.name : null,
+    company: user.company.name,
     department: user.department.name,
     position: user.position.name,
     addresses: user.addresses.map(address => ({
