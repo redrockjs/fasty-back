@@ -3,12 +3,12 @@ import {serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 export const heartbeatSchema = {
   schema: {
     description: "Get a server heartbeat",
-    tags: ['Heartbeat'],
+    tags: ["Heartbeat"],
     response: {
       200: {
-        type: 'object',
+        type: "object",
         properties: {
-          message: { type: 'string' }
+          message: { type: "string" }
         }
       },
       500: serverHttpErrorSchema,

@@ -1,22 +1,22 @@
 import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
 const serverHttpAcceptSchema = {
-  type: 'object',
+  type: "object",
   properties: {
-    message: {type: 'string'},
+    message: {type: "string"},
     result: {
-      id: {type: 'string'},
-      name: {type: 'string'},
+      id: {type: "string"},
+      name: {type: "string"},
     }
   }
 }
 
 const positionSchema = {
-  type: 'object',
-  required: ['id', 'name'],
+  type: "object",
+  required: ["id", "name"],
   properties: {
-    id: {type: 'string', format: 'uuid'},
-    name: {type: 'string', minLength: 1}
+    id: {type: "string", format: "uuid"},
+    name: {type: "string", minLength: 1}
   },
   additionalProperties: false
 }
@@ -24,7 +24,7 @@ const positionSchema = {
 export const allPositionsSchema = {
   schema: {
     description: "Get all positions",
-    tags: ['Position'],
+    tags: ["Position"],
     response: {
       200: {
         type: "array",
@@ -51,7 +51,7 @@ export const singlePositionSchema = {
 export const createPositionSchema = {
   schema: {
     description: "Create position",
-    tags: ['Position'],
+    tags: ["Position"],
     body: positionSchema,
     response: {
       201: serverHttpAcceptSchema,
@@ -63,7 +63,7 @@ export const createPositionSchema = {
 export const deletePositionSchema = {
   schema: {
     description: "Delete position",
-    tags: ['Position'],
+    tags: ["Position"],
     response: {
       200: serverHttpAcceptSchema,
       404: clientHttpErrorSchema,
@@ -75,7 +75,7 @@ export const deletePositionSchema = {
 export const updatePositionSchema = {
   schema: {
     description: "Update position",
-    tags: ['Position'],
+    tags: ["Position"],
     body: positionSchema,
     response: {
       200: serverHttpAcceptSchema,

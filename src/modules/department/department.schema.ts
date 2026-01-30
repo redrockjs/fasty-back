@@ -1,22 +1,22 @@
 import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
 const serverHttpAcceptSchema = {
-  type: 'object',
+  type: "object",
   properties: {
-    message: {type: 'string'},
+    message: {type: "string"},
     result: {
-      id: {type: 'string'},
-      name: {type: 'string'},
+      id: {type: "string"},
+      name: {type: "string"},
     }
   }
 }
 
 const departmentSchema = {
-  type: 'object',
-  required: ['id', 'name'],
+  type: "object",
+  required: ["id", "name"],
   properties: {
-    id: {type: 'string', format: 'uuid'},
-    name: {type: 'string', minLength: 1}
+    id: {type: "string", format: "uuid"},
+    name: {type: "string", minLength: 1}
   },
   additionalProperties: false
 }
@@ -24,7 +24,7 @@ const departmentSchema = {
 export const allDepartmentsSchema = {
   schema: {
     description: "Get all departments",
-    tags: ['Department'],
+    tags: ["Department"],
     response: {
       200: {
         type: "array",
@@ -51,7 +51,7 @@ export const singleDepartmentSchema = {
 export const createDepartmentSchema = {
   schema: {
     description: "Create department",
-    tags: ['Department'],
+    tags: ["Department"],
     body: departmentSchema,
     response: {
       201: serverHttpAcceptSchema,
@@ -63,7 +63,7 @@ export const createDepartmentSchema = {
 export const deleteDepartmentSchema = {
   schema: {
     description: "Delete department",
-    tags: ['Department'],
+    tags: ["Department"],
     response: {
       200: serverHttpAcceptSchema,
       404: clientHttpErrorSchema,
@@ -75,7 +75,7 @@ export const deleteDepartmentSchema = {
 export const updateDepartmentSchema = {
   schema: {
     description: "Update department",
-    tags: ['Department'],
+    tags: ["Department"],
     body: departmentSchema,
     response: {
       200: serverHttpAcceptSchema,

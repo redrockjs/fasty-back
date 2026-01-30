@@ -1,22 +1,22 @@
 import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
 const serverHttpAcceptSchema = {
-  type: 'object',
+  type: "object",
   properties: {
-    message: {type: 'string'},
+    message: {type: "string"},
     result: {
-      id: {type: 'string'},
-      name: {type: 'string'},
+      id: {type: "string"},
+      name: {type: "string"},
     }
   }
 }
 
 const companySchema = {
-  type: 'object',
-  required: ['id', 'name'],
+  type: "object",
+  required: ["id", "name"],
   properties: {
-    id: {type: 'string', format: 'uuid'},
-    name: {type: 'string', minLength: 1}
+    id: {type: "string", format: "uuid"},
+    name: {type: "string", minLength: 1}
   },
   additionalProperties: false
 }
@@ -24,7 +24,7 @@ const companySchema = {
 export const allCompaniesSchema = {
   schema: {
     description: "Get all companies",
-    tags: ['Company'],
+    tags: ["Company"],
     response: {
       200: {
         type: "array",
@@ -51,7 +51,7 @@ export const singleCompanySchema = {
 export const createCompanySchema = {
   schema: {
     description: "Create company",
-    tags: ['Company'],
+    tags: ["Company"],
     body: companySchema,
     response: {
       201: serverHttpAcceptSchema,
@@ -63,7 +63,7 @@ export const createCompanySchema = {
 export const deleteCompanySchema = {
   schema: {
     description: "Delete company",
-    tags: ['Company'],
+    tags: ["Company"],
     response: {
       200: serverHttpAcceptSchema,
       404: clientHttpErrorSchema,
@@ -75,7 +75,7 @@ export const deleteCompanySchema = {
 export const updateCompanySchema = {
   schema: {
     description: "Update company",
-    tags: ['Company'],
+    tags: ["Company"],
     body: companySchema,
     response: {
       200: serverHttpAcceptSchema,

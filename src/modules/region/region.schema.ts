@@ -1,22 +1,22 @@
 import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
 const serverHttpAcceptSchema = {
-  type: 'object',
+  type: "object",
   properties: {
-    message: {type: 'string'},
+    message: {type: "string"},
     result: {
-      id: {type: 'string'},
-      name: {type: 'string'},
+      id: {type: "string"},
+      name: {type: "string"},
     }
   }
 }
 
 const regionSchema = {
-  type: 'object',
-  required: ['id', 'name'],
+  type: "object",
+  required: ["id", "name"],
   properties: {
-    id: {type: 'string', format: 'uuid'},
-    name: {type: 'string', minLength: 1}
+    id: {type: "string", format: "uuid"},
+    name: {type: "string", minLength: 1}
   },
   additionalProperties: false
 }
@@ -24,7 +24,7 @@ const regionSchema = {
 export const allRegionsSchema = {
   schema: {
     description: "Get all regions",
-    tags: ['Region'],
+    tags: ["Region"],
     response: {
       200: {
         type: "array",
@@ -51,7 +51,7 @@ export const singleRegionSchema = {
 export const createRegionSchema = {
   schema: {
     description: "Create region",
-    tags: ['Region'],
+    tags: ["Region"],
     body: regionSchema,
     response: {
       201: serverHttpAcceptSchema,
@@ -63,7 +63,7 @@ export const createRegionSchema = {
 export const deleteRegionSchema = {
   schema: {
     description: "Delete region",
-    tags: ['Region'],
+    tags: ["Region"],
     response: {
       200: serverHttpAcceptSchema,
       404: clientHttpErrorSchema,
@@ -75,7 +75,7 @@ export const deleteRegionSchema = {
 export const updateRegionSchema = {
   schema: {
     description: "Update region",
-    tags: ['Region'],
+    tags: ["Region"],
     body: regionSchema,
     response: {
       200: serverHttpAcceptSchema,

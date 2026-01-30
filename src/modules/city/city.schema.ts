@@ -1,22 +1,22 @@
 import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
 const serverHttpAcceptSchema = {
-  type: 'object',
+  type: "object",
   properties: {
-    message: {type: 'string'},
+    message: {type: "string"},
     result: {
-      id: {type: 'string'},
-      name: {type: 'string'},
+      id: {type: "string"},
+      name: {type: "string"},
     }
   }
 }
 
 const citySchema = {
-  type: 'object',
-  required: ['id', 'name'],
+  type: "object",
+  required: ["id", "name"],
   properties: {
-    id: {type: 'string', format: 'uuid'},
-    name: {type: 'string', minLength: 1}
+    id: {type: "string", format: "uuid"},
+    name: {type: "string", minLength: 1}
   },
   additionalProperties: false
 }
@@ -24,7 +24,7 @@ const citySchema = {
 export const allCitiesSchema = {
   schema: {
     description: "Get all cities",
-    tags: ['City'],
+    tags: ["City"],
     response: {
       200: {
         type: "array",
@@ -38,7 +38,7 @@ export const allCitiesSchema = {
 export const singleCitySchema = {
   schema: {
     description: "Get a single city",
-    tags: ['City'],
+    tags: ["City"],
     response: {
       200: citySchema,
       400: clientHttpErrorSchema,
@@ -51,7 +51,7 @@ export const singleCitySchema = {
 export const createCitySchema = {
   schema: {
     description: "Create city",
-    tags: ['City'],
+    tags: ["City"],
     body: citySchema,
     response: {
       201: serverHttpAcceptSchema,
@@ -63,7 +63,7 @@ export const createCitySchema = {
 export const deleteCitySchema = {
   schema: {
     description: "Delete city",
-    tags: ['City'],
+    tags: ["City"],
     response: {
       200: serverHttpAcceptSchema,
       404: clientHttpErrorSchema,
@@ -75,7 +75,7 @@ export const deleteCitySchema = {
 export const updateCitySchema = {
   schema: {
     description: "Update city",
-    tags: ['City'],
+    tags: ["City"],
     body: citySchema,
     response: {
       200: serverHttpAcceptSchema,

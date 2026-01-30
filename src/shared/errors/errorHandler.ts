@@ -26,12 +26,8 @@ export const serverHttpErrorSchema = {
 }
 
 export const clientHttpErrorSchema = {
-  type: 'object',
+  type: "object",
   properties: {
-    message: {type: 'string'},
+    message: {type: "string"},
   }
-}
-
-export const clientHTTPAcceptSchema = {
-
 }
