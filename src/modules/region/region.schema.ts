@@ -1,21 +1,34 @@
-import {serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
+import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
-export const regionSchema = {
-  id: {type: 'string'},
-  name: {type: 'string'},
+const serverHttpAcceptSchema = {
+  type: 'object',
+  properties: {
+    message: {type: 'string'},
+    result: {
+      id: {type: 'string'},
+      name: {type: 'string'},
+    }
+  }
+}
+
+const regionSchema = {
+  type: 'object',
+  required: ['id', 'name'],
+  properties: {
+    id: {type: 'string', format: 'uuid'},
+    name: {type: 'string', minLength: 1}
+  },
+  additionalProperties: false
 }
 
 export const allRegionsSchema = {
   schema: {
     description: "Get all regions",
-    tags: ['region'],
+    tags: ['Region'],
     response: {
       200: {
         type: "array",
-        items: {
-          type: 'object',
-          properties: regionSchema
-        }
+        items: regionSchema,
       },
       500: serverHttpErrorSchema
     }
@@ -25,24 +38,11 @@ export const allRegionsSchema = {
 export const singleRegionSchema = {
   schema: {
     description: "Get a single region",
-    tags: ["region"],
-    params: {
-      type: "object",
-      properties: {
-        id: {type: 'string'},
-      },
-      required: ["id"]
-    },
+    tags: ["Region"],
     response: {
-      200: {
-        name: {type: 'string'},
-      },
-      404: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-        }
-      },
+      200: regionSchema,
+      400: clientHttpErrorSchema,
+      404: clientHttpErrorSchema,
       500: serverHttpErrorSchema,
     }
   }
@@ -51,26 +51,11 @@ export const singleRegionSchema = {
 export const createRegionSchema = {
   schema: {
     description: "Create region",
-    tags: ['region'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
-    body: {
-      properties: {
-        name: {type: 'string'},
-      }
-    },
+    tags: ['Region'],
+    body: regionSchema,
     response: {
-      201: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      201: serverHttpAcceptSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -78,18 +63,11 @@ export const createRegionSchema = {
 export const deleteRegionSchema = {
   schema: {
     description: "Delete region",
-    tags: ['region'],
+    tags: ['Region'],
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -97,26 +75,12 @@ export const deleteRegionSchema = {
 export const updateRegionSchema = {
   schema: {
     description: "Update region",
-    tags: ['region'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
-    body: {
-      properties: {
-        name: {type: 'string'},
-      }
-    },
+    tags: ['Region'],
+    body: regionSchema,
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }

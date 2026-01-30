@@ -1,21 +1,34 @@
-import {serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
+import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
-export const positionSchema = {
-  id: {type: 'string'},
-  name: {type: 'string'},
+const serverHttpAcceptSchema = {
+  type: 'object',
+  properties: {
+    message: {type: 'string'},
+    result: {
+      id: {type: 'string'},
+      name: {type: 'string'},
+    }
+  }
+}
+
+const positionSchema = {
+  type: 'object',
+  required: ['id', 'name'],
+  properties: {
+    id: {type: 'string', format: 'uuid'},
+    name: {type: 'string', minLength: 1}
+  },
+  additionalProperties: false
 }
 
 export const allPositionsSchema = {
   schema: {
     description: "Get all positions",
-    tags: ['position'],
+    tags: ['Position'],
     response: {
       200: {
         type: "array",
-        items: {
-          type: 'object',
-          properties: positionSchema
-        }
+        items: positionSchema,
       },
       500: serverHttpErrorSchema
     }
@@ -25,24 +38,11 @@ export const allPositionsSchema = {
 export const singlePositionSchema = {
   schema: {
     description: "Get a single position",
-    tags: ["position"],
-    params: {
-      type: "object",
-      properties: {
-        id: {type: 'string'},
-      },
-      required: ["id"]
-    },
+    tags: ["Position"],
     response: {
-      200: {
-        name: {type: 'string'},
-      },
-      404: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-        }
-      },
+      200: positionSchema,
+      400: clientHttpErrorSchema,
+      404: clientHttpErrorSchema,
       500: serverHttpErrorSchema,
     }
   }
@@ -51,26 +51,11 @@ export const singlePositionSchema = {
 export const createPositionSchema = {
   schema: {
     description: "Create position",
-    tags: ['position'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
-    body: {
-      properties: {
-        name: {type: 'string'},
-      }
-    },
+    tags: ['Position'],
+    body: positionSchema,
     response: {
-      201: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      201: serverHttpAcceptSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -78,18 +63,11 @@ export const createPositionSchema = {
 export const deletePositionSchema = {
   schema: {
     description: "Delete position",
-    tags: ['position'],
+    tags: ['Position'],
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -97,26 +75,12 @@ export const deletePositionSchema = {
 export const updatePositionSchema = {
   schema: {
     description: "Update position",
-    tags: ['position'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
-    body: {
-      properties: {
-        name: {type: 'string'},
-      }
-    },
+    tags: ['Position'],
+    body: positionSchema,
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }

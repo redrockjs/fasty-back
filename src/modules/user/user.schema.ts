@@ -1,54 +1,72 @@
-import {serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
-import {companySchema} from "../company/company.schema.js";
-import {departmentSchema} from "../department/department.schema.js";
-import {positionSchema} from "../position/position.schema.js";
+import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
+
+const serverHttpAcceptSchema = {
+  type: 'object',
+  properties: {
+    message: {type: 'string'},
+    result: {
+      id: {type: 'string'},
+      name: {type: 'string'},
+    }
+  }
+}
 
 const userSchema = {
-  id: {type: 'string'},
-  firstName: {type: 'string'},
-  midName: {type: 'string'},
-  lastName: {type: 'string'},
-  email: {
-    type: 'string',
-    format: "email"
+  type: 'object',
+  required: [
+    'firstName',
+    'lastName',
+    'email',
+    'company',
+    'department',
+    'position',
+    'addresses',
+    'phones'
+  ],
+  properties: {
+    firstName: {type: 'string', minLength: 2},
+    midName: {type: 'string'},
+    lastName: {type: 'string', minLength: 2},
+    email: {type: 'string', format: 'email'},
+    company: {type: 'string', minLength: 2},
+    department: {type: 'string', minLength: 2},
+    position: {type: 'string', minLength: 2},
+    addresses: {
+      type: 'object',
+      required: ['region', 'city', 'street', 'building', 'apartment'],
+      properties: {
+        region: {type: 'string', minLength: 1},
+        city: {type: 'string', minLength: 1},
+        street: {type: 'string', minLength: 1},
+        building: {type: 'number', minLength: 1},
+        apartment: {type: 'number', minLength: 1}
+      },
+      additionalProperties: false
+    },
+    phones: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['number', 'type'],
+        properties: {
+          number: {type: 'string', pattern: '^[0-9]+$'}, // только цифры
+          type: {type: 'string', enum: ['HOME', 'WORK', 'MOBILE']}
+        },
+        additionalProperties: false
+      }
+    }
   },
-  company: {type: 'string'},
-  department: {type: 'string'},
-  position: {type: 'string'},
-  addresses: {},
-  phones: {
-    // type: "object",
-    // properties: {
-    //   create: {
-    //     type: "array",
-    //     items: {
-    //       type: "object",
-    //       properties: {
-    //         number: {
-    //           type: "string",
-    //           pattern: "^[0-9]{10,15}$"
-    //         },
-    //         type: {
-    //           type: "string",
-    //         }
-    //       },
-    //     }
-    //   }
-    // }
-  }
+  additionalProperties: false
 }
 
 export const allUsersSchema = {
   schema: {
     description: "Get all users",
-    tags: ['user'],
+    tags: ['User'],
     response: {
       200: {
-        //type: "array",
-        // items: {
-        //   type: 'object',
-        //   properties: userSchema
-        // }
+        type: 'array',
+        items: userSchema,
       },
       500: serverHttpErrorSchema
     }
@@ -58,24 +76,11 @@ export const allUsersSchema = {
 export const singleUserSchema = {
   schema: {
     description: "Get a single user",
-    tags: ["user"],
-    params: {
-      type: "object",
-      properties: {
-        id: {type: 'string'},
-      },
-      required: ["id"]
-    },
+    tags: ['User'],
     response: {
-      200: {
-        //properties: userSchema
-      },
-      404: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-        }
-      },
+      200: userSchema,
+      400: clientHttpErrorSchema,
+      404: clientHttpErrorSchema,
       500: serverHttpErrorSchema,
     }
   }
@@ -84,19 +89,11 @@ export const singleUserSchema = {
 export const createUserSchema = {
   schema: {
     description: "Create user",
-    tags: ['user'],
-    type: 'object',
-    body: {
-      properties: userSchema
-    },
+    tags: ['User'],
+    body: userSchema,
     response: {
-      201: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-          result: userSchema
-        }
-      }
+      201: serverHttpAcceptSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -104,15 +101,11 @@ export const createUserSchema = {
 export const deleteUserSchema = {
   schema: {
     description: "Delete user",
-    tags: ['user'],
+    tags: ['User'],
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-          result: userSchema
-        }
-      }
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -120,19 +113,12 @@ export const deleteUserSchema = {
 export const updateUserSchema = {
   schema: {
     description: "Update user",
-    tags: ['user'],
-    // type: 'object',
-    // body: {
-    //   properties: userSchema
-    // },
-    // response: {
-    //   200: {
-    //     type: 'object',
-    //     properties: {
-    //       message: { type: 'string' },
-    //       result: userSchema
-    //     }
-    //   }
-    // }
+    tags: ['User'],
+    body: userSchema,
+    response: {
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
+    }
   }
 }

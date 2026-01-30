@@ -1,21 +1,34 @@
-import {serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
+import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
-export const companySchema = {
-  id: {type: 'string'},
-  name: {type: 'string'},
+const serverHttpAcceptSchema = {
+  type: 'object',
+  properties: {
+    message: {type: 'string'},
+    result: {
+      id: {type: 'string'},
+      name: {type: 'string'},
+    }
+  }
+}
+
+const companySchema = {
+  type: 'object',
+  required: ['id', 'name'],
+  properties: {
+    id: {type: 'string', format: 'uuid'},
+    name: {type: 'string', minLength: 1}
+  },
+  additionalProperties: false
 }
 
 export const allCompaniesSchema = {
   schema: {
     description: "Get all companies",
-    tags: ['company'],
+    tags: ['Company'],
     response: {
       200: {
         type: "array",
-        items: {
-          type: 'object',
-          properties: companySchema
-        }
+        items: companySchema,
       },
       500: serverHttpErrorSchema
     }
@@ -25,24 +38,11 @@ export const allCompaniesSchema = {
 export const singleCompanySchema = {
   schema: {
     description: "Get a single company",
-    tags: ["company"],
-    params: {
-      type: "object",
-      properties: {
-        id: {type: 'string'},
-      },
-      required: ["id"]
-    },
+    tags: ["Company"],
     response: {
-      200: {
-        name: {type: 'string'},
-      },
-      404: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-        }
-      },
+      200: companySchema,
+      400: clientHttpErrorSchema,
+      404: clientHttpErrorSchema,
       500: serverHttpErrorSchema,
     }
   }
@@ -51,26 +51,11 @@ export const singleCompanySchema = {
 export const createCompanySchema = {
   schema: {
     description: "Create company",
-    tags: ['company'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
-    body: {
-      properties: {
-        name: {type: 'string'},
-      }
-    },
+    tags: ['Company'],
+    body: companySchema,
     response: {
-      201: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      201: serverHttpAcceptSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -78,18 +63,11 @@ export const createCompanySchema = {
 export const deleteCompanySchema = {
   schema: {
     description: "Delete company",
-    tags: ['company'],
+    tags: ['Company'],
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -97,26 +75,12 @@ export const deleteCompanySchema = {
 export const updateCompanySchema = {
   schema: {
     description: "Update company",
-    tags: ['company'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
-    body: {
-      properties: {
-        name: {type: 'string'},
-      }
-    },
+    tags: ['Company'],
+    body: companySchema,
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }

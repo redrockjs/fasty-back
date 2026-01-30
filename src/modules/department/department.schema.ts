@@ -1,21 +1,34 @@
-import {serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
+import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
-export const departmentSchema = {
-  id: {type: 'string'},
-  name: {type: 'string'},
+const serverHttpAcceptSchema = {
+  type: 'object',
+  properties: {
+    message: {type: 'string'},
+    result: {
+      id: {type: 'string'},
+      name: {type: 'string'},
+    }
+  }
+}
+
+const departmentSchema = {
+  type: 'object',
+  required: ['id', 'name'],
+  properties: {
+    id: {type: 'string', format: 'uuid'},
+    name: {type: 'string', minLength: 1}
+  },
+  additionalProperties: false
 }
 
 export const allDepartmentsSchema = {
   schema: {
     description: "Get all departments",
-    tags: ['department'],
+    tags: ['Department'],
     response: {
       200: {
         type: "array",
-        items: {
-          type: 'object',
-          properties: departmentSchema
-        }
+        items: departmentSchema,
       },
       500: serverHttpErrorSchema
     }
@@ -25,24 +38,11 @@ export const allDepartmentsSchema = {
 export const singleDepartmentSchema = {
   schema: {
     description: "Get a single department",
-    tags: ["department"],
-    params: {
-      type: "object",
-      properties: {
-        id: {type: 'string'},
-      },
-      required: ["id"]
-    },
+    tags: ["Department"],
     response: {
-      200: {
-        name: {type: 'string'},
-      },
-      404: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-        }
-      },
+      200: departmentSchema,
+      400: clientHttpErrorSchema,
+      404: clientHttpErrorSchema,
       500: serverHttpErrorSchema,
     }
   }
@@ -51,26 +51,11 @@ export const singleDepartmentSchema = {
 export const createDepartmentSchema = {
   schema: {
     description: "Create department",
-    tags: ['department'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
-    body: {
-      properties: {
-        name: {type: 'string'},
-      }
-    },
+    tags: ['Department'],
+    body: departmentSchema,
     response: {
-      201: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      201: serverHttpAcceptSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -78,18 +63,11 @@ export const createDepartmentSchema = {
 export const deleteDepartmentSchema = {
   schema: {
     description: "Delete department",
-    tags: ['department'],
+    tags: ['Department'],
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -97,26 +75,12 @@ export const deleteDepartmentSchema = {
 export const updateDepartmentSchema = {
   schema: {
     description: "Update department",
-    tags: ['department'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
-    body: {
-      properties: {
-        name: {type: 'string'},
-      }
-    },
+    tags: ['Department'],
+    body: departmentSchema,
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: {type: 'string'},
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
