@@ -1,23 +1,33 @@
-import {serverError} from "../../shared/errors/errorHandler.js";
+import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
-export const citySchema = {
-  id: {type: 'string'},
-  name: {type: 'string'},
+const serverHttpAcceptSchema = {
+  type: 'object',
+  properties: {
+    message: {type: 'string'},
+    result: {
+      id: {type: 'string'},
+      name: {type: 'string'},
+    }
+  }
 }
 
 export const allCitiesSchema = {
   schema: {
     description: "Get all cities",
-    tags: ['city'],
+    tags: ['User'],
     response: {
       200: {
         type: "array",
         items: {
           type: 'object',
-          properties: citySchema
+          required: ['id', 'name'],
+          properties: {
+            id: {type: 'string', format: 'uuid'},
+            name: {type: 'string', minLength: 1}
+          }
         }
       },
-      500: serverError
+      500: serverHttpErrorSchema
     }
   }
 }
@@ -25,25 +35,19 @@ export const allCitiesSchema = {
 export const singleCitySchema = {
   schema: {
     description: "Get a single city",
-    tags: ["city"],
-    params: {
-      type: "object",
-      properties: {
-        id: {type: 'string'},
-      },
-      required: ["id"]
-    },
+    tags: ['User'],
     response: {
       200: {
-        name: {type: 'string'},
-      },
-      404: {
         type: 'object',
+        required: ['id', 'name'],
         properties: {
-          message: {type: 'string'},
-        }
+          id: {type: 'string', format: 'uuid'},
+          name: {type: 'string', minLength: 1}
+        },
+        additionalProperties: false
       },
-      500: serverError,
+      404: clientHttpErrorSchema,
+      500: serverHttpErrorSchema,
     }
   }
 }
@@ -51,26 +55,17 @@ export const singleCitySchema = {
 export const createCitySchema = {
   schema: {
     description: "Create city",
-    tags: ['city'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
+    tags: ['User'],
     body: {
+      type: "object",
+      required: ["name"],
       properties: {
-        name: {type: 'string'},
-      }
+        name: {type: 'string', minLength: 2},
+      },
+      additionalProperties: false
     },
     response: {
-      201: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      201: serverHttpAcceptSchema
     }
   }
 }
@@ -78,18 +73,9 @@ export const createCitySchema = {
 export const deleteCitySchema = {
   schema: {
     description: "Delete city",
-    tags: ['city'],
+    tags: ['User'],
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema
     }
   }
 }
@@ -97,26 +83,17 @@ export const deleteCitySchema = {
 export const updateCitySchema = {
   schema: {
     description: "Update city",
-    tags: ['city'],
-    required: ['name'],
-    additionalProperties: false,
-    type: 'object',
+    tags: ['User'],
     body: {
+      type: "object",
+      required: ["name"],
       properties: {
-        name: {type: 'string'},
-      }
+        name: {type: 'string', minLength: 2},
+      },
+      additionalProperties: false
     },
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          result: {
-            id: {type: 'string'},
-            name: {type: 'string'},
-          }
-        }
-      }
+      200: serverHttpAcceptSchema
     }
   }
 }

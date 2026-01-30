@@ -1,4 +1,4 @@
-import {serverError} from "../../shared/errors/errorHandler.js";
+import {serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
 export const positionSchema = {
   id: {type: 'string'},
@@ -17,7 +17,7 @@ export const allPositionsSchema = {
           properties: positionSchema
         }
       },
-      500: serverError
+      500: serverHttpErrorSchema
     }
   }
 }
@@ -43,7 +43,7 @@ export const singlePositionSchema = {
           message: {type: 'string'},
         }
       },
-      500: serverError,
+      500: serverHttpErrorSchema,
     }
   }
 }

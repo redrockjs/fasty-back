@@ -1,7 +1,8 @@
-import {serverError} from "../../shared/errors/errorHandler.js";
+import {serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 
 export const heartbeatSchema = {
   schema: {
+    tags: ['Heartbeat'],
     response: {
       200: {
         type: 'object',
@@ -9,7 +10,7 @@ export const heartbeatSchema = {
           message: { type: 'string' }
         }
       },
-      500: serverError,
+      500: serverHttpErrorSchema,
     }
   }
 }

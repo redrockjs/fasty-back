@@ -1,4 +1,4 @@
-import {serverError} from "../../shared/errors/errorHandler.js";
+import {serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
 import {companySchema} from "../company/company.schema.js";
 import {departmentSchema} from "../department/department.schema.js";
 import {positionSchema} from "../position/position.schema.js";
@@ -50,7 +50,7 @@ export const allUsersSchema = {
         //   properties: userSchema
         // }
       },
-      500: serverError
+      500: serverHttpErrorSchema
     }
   }
 }
@@ -76,7 +76,7 @@ export const singleUserSchema = {
           message: {type: 'string'},
         }
       },
-      500: serverError,
+      500: serverHttpErrorSchema,
     }
   }
 }

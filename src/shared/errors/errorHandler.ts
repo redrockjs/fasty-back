@@ -18,11 +18,20 @@ export const errorHandler = (
   return reply.status(500).send({message: "Something went wrong"});
 };
 
-export const serverError = {
+export const serverHttpErrorSchema = {
   type: "object",
   properties: {
-    message: {
-      type: "string",
-    }
+    message: {type: "string"}
   }
+}
+
+export const clientHttpErrorSchema = {
+  type: 'object',
+  properties: {
+    message: {type: 'string'},
+  }
+}
+
+export const clientHTTPAcceptSchema = {
+
 }

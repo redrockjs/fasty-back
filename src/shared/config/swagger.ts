@@ -1,6 +1,7 @@
 import type {FastifyDynamicSwaggerOptions} from '@fastify/swagger'
 
 export const swaggerConfig: FastifyDynamicSwaggerOptions = {
+  mode: "dynamic",
   openapi: {
     info: {
       title: "Fasty Prisma REST API",
