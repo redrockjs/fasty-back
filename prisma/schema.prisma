@@ -24,7 +24,7 @@ model City {
 model Company {
   id      String @id @default(uuid())
   name    String @unique
-  company User[] // 1:N company:user
+  company Contact[] // 1:N company:user
 
   @@map("Companies")
 }
@@ -32,7 +32,7 @@ model Company {
 model Department {
   id         String @id @default(uuid())
   name       String @unique
-  department User[] // 1:N company:department
+  department Contact[] // 1:N company:department
 
   @@map("Departments")
 }
@@ -40,7 +40,7 @@ model Department {
 model Position {
   id       String @id @default(uuid())
   name     String @unique
-  position User[] // 1:N company:position
+  position Contact[] // 1:N company:position
 
   @@map("Positions")
 }
@@ -51,7 +51,7 @@ model Phone {
   phone  String
   type   PhoneType
   userId String
-  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 1:N phone:user
+  user   Contact      @relation(fields: [userId], references: [id], onDelete: Cascade) // 1:N phone:user
 
   @@unique([userId, type])
   @@map("Phones")
@@ -77,11 +77,11 @@ model Address {
   building  Int
   apartment Int
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 addreses:user
+  user   Contact   @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 addreses:user
   userId String @map("user_id") // N:1 addreses:user
 }
 
-model User {
+model Contact {
   id        String  @id @default(uuid())
   firstName String
   midName   String?

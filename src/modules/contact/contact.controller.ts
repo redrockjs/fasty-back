@@ -1,23 +1,23 @@
 import {type FastifyReply, type FastifyRequest} from "fastify";
 import {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser
-} from "./user.service.js";
-import type {TUser} from "./user.types.js";
+  getAllContacts,
+  getContactById,
+  createContact,
+  updateContact,
+  deleteContact
+} from "./contact.service.js";
+import type {TContact} from "./contact.types.js";
 
-type GetUserRequest = {
+type GetContactRequest = {
   id: string
 }
 
-type CreateUserRequest = TUser
-type UpdateUserRequest = TUser
+type CreateContactRequest = TContact
+type UpdateContactRequest = TContact
 
-export async function getAllUsersHandler(request: FastifyRequest, reply: FastifyReply) {
+export async function getAllContactsHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
-    const result = await getAllUsers()
+    const result = await getAllContacts()
     request.log.info(result)
     reply.code(200).send(result)
   } catch (error) {
@@ -26,13 +26,15 @@ export async function getAllUsersHandler(request: FastifyRequest, reply: Fastify
   }
 }
 
-export async function getUserByIdHandler(request: FastifyRequest<{ Params: GetUserRequest }>, reply: FastifyReply) {
+export async function getContactByIdHandler(request: FastifyRequest<{
+  Params: GetContactRequest
+}>, reply: FastifyReply) {
   try {
     const {id} = request.params
 
-    //if (!id) reply.code(400).send({message: "City id is required"})
+    //if (!id) reply.code(400).send({message: "Contact id is required"})
 
-    const result = await getUserById(id);
+    const result = await getContactById(id);
     request.log.info(result)
     reply.code(200)
     return result
@@ -42,15 +44,17 @@ export async function getUserByIdHandler(request: FastifyRequest<{ Params: GetUs
   }
 }
 
-export async function createUserHandler(request: FastifyRequest<{ Body: CreateUserRequest }>, reply: FastifyReply) {
+export async function createContactHandler(request: FastifyRequest<{
+  Body: CreateContactRequest
+}>, reply: FastifyReply) {
   try {
-    const user = request.body
-    const result = await createUser(user)
+    const contact = request.body
+    const result = await createContact(contact)
     request.log.info(result)
     reply.code(201)
 
     return {
-      message: 'Successfully created city',
+      message: 'Successfully created contact',
       result: result
     }
   } catch (error) {
@@ -59,10 +63,12 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
   }
 }
 
-export async function deleteUserHandler(request: FastifyRequest<{ Params: GetUserRequest }>, reply: FastifyReply) {
+export async function deleteContactHandler(request: FastifyRequest<{
+  Params: GetContactRequest
+}>, reply: FastifyReply) {
   try {
     const {id} = request.params
-    const result = await deleteUser(id)
+    const result = await deleteContact(id)
     request.log.info(result)
     reply.code(200)
 
@@ -76,15 +82,15 @@ export async function deleteUserHandler(request: FastifyRequest<{ Params: GetUse
   }
 }
 
-export async function updateUserHandler(request: FastifyRequest<{
-  Params: GetUserRequest,
-  Body: UpdateUserRequest
+export async function updateContactHandler(request: FastifyRequest<{
+  Params: GetContactRequest,
+  Body: UpdateContactRequest
 }>, reply: FastifyReply) {
   try {
-    const {id:requestId} = request.params
-    const user = request.body
+    const {id: requestId} = request.params
+    const contact = request.body
 
-    const result = await updateUser({requestId, ...user})
+    const result = await updateContact({requestId, ...contact})
     request.log.info(result)
     reply.code(200)
 

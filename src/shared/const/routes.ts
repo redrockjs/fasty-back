@@ -5,6 +5,7 @@ export const ROUTES = {
   COMPANY: '/api/company',
   DEPARTMENT: '/api/department',
   POSITION: '/api/position',
-  USER: '/api/user',
+  CONTACT: '/api/contact',
   API_DOCS: '/api/docs',
+  AUTH: '/api/auth',
 }

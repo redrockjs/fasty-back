@@ -14,18 +14,12 @@ import {
   deleteCitySchema
 } from "./city.schema.js";
 
-
 async function cityRoutes(fastify: FastifyInstance) {
-  // Get All items
-  fastify.get('/', allCitiesSchema, getAllCitiesHandler)
-  // Get item by ID
-  fastify.get('/:id', singleCitySchema, getCityByIdHandler)
-  // Create item
-  fastify.post('/', createCitySchema, createCityHandler)
-  // Delete item
-  fastify.delete('/:id', deleteCitySchema, deleteCityHandler)
-  // Update item
-  fastify.put('/:id', updateCitySchema, updateCityHandler)
+  fastify.get('/', allCitiesSchema, getAllCitiesHandler) // Get All items
+  fastify.get('/:id', singleCitySchema, getCityByIdHandler) // Get item by ID
+  fastify.post('/', createCitySchema, createCityHandler) // Create item
+  fastify.delete('/:id', deleteCitySchema, deleteCityHandler) // Delete item
+  fastify.put('/:id', updateCitySchema, updateCityHandler) // Update item
 }
 
 export default cityRoutes;

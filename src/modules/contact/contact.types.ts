@@ -1,4 +1,4 @@
-type TUser = {
+type TContact = {
   id: string,
   firstName: string
   midName: string | null
@@ -31,4 +31,4 @@ enum TPhoneType {
   OTHER = "OTHER",
 }
 
-export type {TUser, TPhoneType}
+export type {TContact, TPhoneType}
