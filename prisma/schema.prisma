@@ -22,24 +22,24 @@ model City {
 
 // Organization
 model Company {
-  id      String @id @default(uuid())
-  name    String @unique
+  id      String    @id @default(uuid())
+  name    String    @unique
   company Contact[] // 1:N company:user
 
   @@map("Companies")
 }
 
 model Department {
-  id         String @id @default(uuid())
-  name       String @unique
+  id         String    @id @default(uuid())
+  name       String    @unique
   department Contact[] // 1:N company:department
 
   @@map("Departments")
 }
 
 model Position {
-  id       String @id @default(uuid())
-  name     String @unique
+  id       String    @id @default(uuid())
+  name     String    @unique
   position Contact[] // 1:N company:position
 
   @@map("Positions")
@@ -51,7 +51,7 @@ model Phone {
   phone  String
   type   PhoneType
   userId String
-  user   Contact      @relation(fields: [userId], references: [id], onDelete: Cascade) // 1:N phone:user
+  user   Contact   @relation(fields: [userId], references: [id], onDelete: Cascade) // 1:N phone:user
 
   @@unique([userId, type])
   @@map("Phones")
@@ -77,8 +77,8 @@ model Address {
   building  Int
   apartment Int
 
-  user   Contact   @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 addreses:user
-  userId String @map("user_id") // N:1 addreses:user
+  user   Contact @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 addreses:user
+  userId String  @map("user_id") // N:1 addreses:user
 }
 
 model Contact {
@@ -99,4 +99,28 @@ model Contact {
 
   addresses Address[] // 1:N user:addresses
   phones    Phone[] // 1:N user:phones
+}
+
+//Authentification
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
 }
