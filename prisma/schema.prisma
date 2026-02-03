@@ -106,6 +106,8 @@ model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
+  firstName String
+  lastName  String
   role      Role     @default(USER)
   createdAt DateTime @default(now())
 
@@ -115,9 +117,13 @@ model User {
 model RefreshToken {
   id        String   @id @default(uuid())
   token     String   @unique
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  revoked   Boolean  @default(false)
   createdAt DateTime @default(now())
+  expiresAt DateTime
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 enum Role {
