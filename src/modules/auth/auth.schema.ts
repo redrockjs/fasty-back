@@ -83,7 +83,8 @@ export const createUserSchema = {
         firstName: {type: "string", minLength: 2},
         lastName: {type: "string", minLength: 2},
         email: {type: "string", format: "email"},
-        password: {type: "string", minLength: 8, maxLength: 24},
+        password: {type: "string", minLength: 6, maxLength: 24},
+        role: {type: "string", enum: ["ADMIN", "USER"]},
       },
       additionalProperties: false
     },

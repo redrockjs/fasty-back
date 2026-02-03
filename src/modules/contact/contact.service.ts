@@ -1,5 +1,5 @@
 import {prisma} from "../../shared/config/prisma.js";
-import type {TContact} from "./contact.types.js";
+import type {IContact} from "./contact.types.js";
 import {normalizeContact} from "./contact.mapper.js";
 
 /**
@@ -44,7 +44,7 @@ export async function getContactById(id: string) {
 /**
  * Create contact in DB
  */
-export async function createContact({...props}: TContact) {
+export async function createContact({...props}: IContact) {
 
   const {firstName, midName, lastName, email, company, department, position, addresses, phones} = props
 
@@ -129,7 +129,7 @@ export async function deleteContact(id: string) {
 /**
  * Update contact by ID from DB
  */
-export async function updateContact({...props}: { requestId: string } & TContact) {
+export async function updateContact({...props}: { requestId: string } & IContact) {
 
   const {requestId, firstName, midName, lastName, email, company, department, position, addresses, phones} = props
 

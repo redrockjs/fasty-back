@@ -1,4 +1,3 @@
-
 export const configPinoLogger = {
   transport: {
     target: 'pino-pretty',

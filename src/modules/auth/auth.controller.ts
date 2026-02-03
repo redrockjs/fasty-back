@@ -1,15 +1,12 @@
 import {type FastifyReply, type FastifyRequest} from "fastify";
+import {createUser, loginUser, logoutUser, refreshAccessToken} from "./auth.service.js";
+import type {IUser} from "./auth.types.js";
 
-
-type UserRequest = {
-  id: string;
-  email: string,
-  password: string,
-}
+type UserRequest = Omit<IUser, 'id' | 'createdAt'>
 
 type UpdateUserRequest = {
   oldPassword: string,
-} & UserRequest
+} & IUser
 
 type Token = {
   accessToken: string,
@@ -21,11 +18,17 @@ export async function loginUserHandler(request: FastifyRequest<{
 }>, reply: FastifyReply) {
   try {
     const {email, password} = request.body;
-    console.log('🍒', email, password);
 
-    return reply.code(201).send({
-      message: 'Login user',
-      result: 'success'
+    const {id, refreshToken} = await loginUser({email, password});
+
+    const accessToken = request.server.jwt.sign(
+      {userId: id},
+      {expiresIn: '15m'},
+    )
+
+    return reply.code(200).send({
+      access: accessToken,
+      refresh: refreshToken,
     })
   } catch (error) {
     return reply.code(500).send({message: "Something went wrong"});
@@ -37,11 +40,17 @@ export async function refreshTokenHandler(request: FastifyRequest<{
 }>, reply: FastifyReply) {
   try {
     const {refreshToken} = request.body;
-    console.log('🍒', refreshToken);
 
-    return reply.code(201).send({
-      message: 'Update refresh token',
-      result: 'success'
+    const {id} = await refreshAccessToken({refreshToken});
+
+    const accessToken = request.server.jwt.sign(
+      {userId: id},
+      {expiresIn: '15m'},
+    )
+
+    return reply.code(200).send({
+      access: accessToken,
+      refresh: refreshToken
     })
   } catch (error) {
     return reply.code(500).send({message: "Something went wrong"});
@@ -53,9 +62,10 @@ export async function logoutUserHandler(request: FastifyRequest<{
 }>, reply: FastifyReply) {
   try {
     const {refreshToken} = request.body;
-    console.log('🍒', refreshToken);
 
-    return reply.code(201).send({
+    await logoutUser({refreshToken})
+
+    return reply.code(200).send({
       message: 'Logout user',
       result: 'success'
     })
@@ -68,13 +78,14 @@ export async function createUserHandler(request: FastifyRequest<{
   Body: Omit<UserRequest, 'id'>
 }>, reply: FastifyReply) {
   try {
-    const {email, password} = request.body
-    console.log('🍒', email, password)
+    const {firstName, lastName, email, password, role} = request.body
 
-    return reply.code(201).send({
-      message: 'Successfully register user',
-      result: 'success'
-    })
+    const user = await createUser({firstName, lastName, email, password, role})
+    //
+    // return reply.code(201).send({
+    //   message: `Successfully register user with id: ${user.id}`,
+    //   result: 'success'
+    // })
   } catch (error) {
     return reply.code(500).send({message: "Something went wrong"});
   }
@@ -99,7 +110,7 @@ export async function updatePasswordHandler(request: FastifyRequest<{
 }
 
 export async function deleteUserHandler(request: FastifyRequest<{
-  Params: Pick<UserRequest, 'id'>
+  Params: Pick<IUser, 'id'>
 }>, reply: FastifyReply) {
   try {
     const {id} = request.params

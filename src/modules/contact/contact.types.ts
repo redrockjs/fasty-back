@@ -1,4 +1,4 @@
-type TContact = {
+interface IContact {
   id: string,
   firstName: string
   midName: string | null
@@ -7,11 +7,11 @@ type TContact = {
   company: string
   department: string
   position: string
-  addresses: TAddress[]
-  phones: TPhone[]
+  addresses: IAddress[]
+  phones: IPhone[]
 }
 
-type TAddress = {
+interface IAddress {
   region: string
   city: string
   street: string
@@ -19,16 +19,16 @@ type TAddress = {
   apartment: string
 }
 
-type TPhone = {
+interface IPhone {
   phone: string
-  type: TPhoneType
+  type: PhoneType
 }
 
-enum TPhoneType {
+enum PhoneType {
   WORK = "WORK",
   MOBILE = "MOBILE",
   HOME = "HOME",
   OTHER = "OTHER",
 }
 
-export type {TContact, TPhoneType}
+export type {IContact, PhoneType}
