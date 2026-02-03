@@ -10,7 +10,8 @@
     "build": "tsc -p tsconfig.json -w",
     "test": "vitest",
     "test:watch": "npx vitest --watch",
-    "test:cov": "npx vitest --coverage"
+    "test:cov": "npx vitest --coverage",
+    "prisma:gen": "npx prisma generate"
   },
   "author": "redrockjs",
   "license": "ISC",

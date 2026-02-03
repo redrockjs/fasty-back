@@ -26,8 +26,8 @@ export const loginUserSchema = {
     },
     response: {
       200: serverHttpAcceptSchema,
-      404: clientHttpErrorSchema,
-      500: serverHttpErrorSchema,
+      // 404: clientHttpErrorSchema,
+      // 500: serverHttpErrorSchema,
     }
   }
 }
@@ -46,8 +46,8 @@ export const refreshTokenSchema = {
     },
     response: {
       200: serverHttpAcceptSchema,
-      404: clientHttpErrorSchema,
-      500: serverHttpErrorSchema,
+      // 404: clientHttpErrorSchema,
+      // 500: serverHttpErrorSchema,
     }
   }
 }
@@ -66,8 +66,8 @@ export const logoutUserSchema = {
     },
     response: {
       200: serverHttpAcceptSchema,
-      404: clientHttpErrorSchema,
-      500: serverHttpErrorSchema,
+      // 404: clientHttpErrorSchema,
+      // 500: serverHttpErrorSchema,
     }
   }
 }
@@ -90,7 +90,7 @@ export const createUserSchema = {
     },
     response: {
       201: serverHttpAcceptSchema,
-      500: serverHttpErrorSchema,
+      //500: serverHttpErrorSchema,
     }
   }
 }
@@ -101,17 +101,17 @@ export const updatePasswordSchema = {
     tags: ["Auth"],
     body: {
       type: "object",
-      required: ["password"],
+      required: ["oldPassword", "password"],
       properties: {
-        password: {type: "string", minLength: 8, maxLength: 24},
         oldPassword: {type: "string", minLength: 8, maxLength: 24},
+        password: {type: "string", minLength: 8, maxLength: 24},
       },
       additionalProperties: false
     },
     response: {
       200: serverHttpAcceptSchema,
-      404: clientHttpErrorSchema,
-      500: serverHttpErrorSchema,
+      // 404: clientHttpErrorSchema,
+      // 500: serverHttpErrorSchema,
     }
   }
 }
@@ -122,8 +122,8 @@ export const deleteUserSchema = {
     tags: ["Auth"],
     response: {
       200: serverHttpAcceptSchema,
-      404: clientHttpErrorSchema,
-      500: serverHttpErrorSchema,
+      // 404: clientHttpErrorSchema,
+      // 500: serverHttpErrorSchema,
     }
   }
 }

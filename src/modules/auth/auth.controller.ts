@@ -1,5 +1,13 @@
 import {type FastifyReply, type FastifyRequest} from "fastify";
-import {createUser, loginUser, logoutUser, refreshAccessToken, updateUserPassword} from "./auth.service.js";
+import {
+  createUser,
+  deleteUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  updateUserPassword,
+  checkPassword
+} from "./auth.service.js";
 import type {IUser} from "./auth.types.js";
 
 type UserRequest = Omit<IUser, 'id' | 'createdAt'>
@@ -102,8 +110,19 @@ export async function updatePasswordHandler(request: FastifyRequest<{
     const {id} = request.params
     const {password, oldPassword} = request.body
 
+    const validPassword = await checkPassword({id, password: oldPassword})
+
+    if (!validPassword) {
+      return reply.code(449).send({
+        message: `Request failed`,
+        result: 'rejected'
+      })
+    }
+
+    await updateUserPassword({id, password})
+
     return reply.code(200).send({
-      message: 'Update password',
+      message: `Password updated for user with id: ${id}`,
       result: 'success'
     })
   } catch (e) {
@@ -116,7 +135,8 @@ export async function deleteUserHandler(request: FastifyRequest<{
 }>, reply: FastifyReply) {
   try {
     const {id} = request.params
-    console.log('🍒', id, "User deleted")
+
+    await deleteUser({id})
 
     return reply.code(200).send({
       message: `Successfully delete user with id: ${id}`,

@@ -17,4 +17,4 @@ export const swaggerConfig: FastifyDynamicSwaggerOptions = {
       description: "Fastify backend repo on GitHub",
     },
   },
-}
+} as const;

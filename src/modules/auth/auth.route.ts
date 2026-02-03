@@ -21,7 +21,7 @@ async function authRoutes(fastify: FastifyInstance) {
   fastify.post('/logout', logoutUserSchema, logoutUserHandler)
   fastify.post('/refresh', refreshTokenSchema, refreshTokenHandler)
   fastify.post('/', createUserSchema, createUserHandler)
-  fastify.put('/:id', updatePasswordSchema, updatePasswordHandler)
+  fastify.patch('/:id', updatePasswordSchema, updatePasswordHandler)
   fastify.delete('/:id', deleteUserSchema, deleteUserHandler)
 }
 

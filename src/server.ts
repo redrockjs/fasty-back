@@ -1,5 +1,6 @@
 import {buildApp} from './app.js'
 import {configPinoLogger} from "./shared/config/pino.js";
+import {ROUTES} from "./shared/const/routes.js";
 
 const options = {
   logger: configPinoLogger
@@ -15,4 +16,5 @@ app.listen({port: APP_PORT}, (err, address) => {
     process.exit(1)
   }
   app.log.info(`▁ ▂ ▃ ▄ ▅ ▆ ▇ 🔥 Server running at ${address}`)
+  app.log.info(`SwaggerUI 🔎 http://localhost:${APP_PORT}${ROUTES.API_DOCS}`)
 })

@@ -31,8 +31,6 @@ export async function createUser({firstName, lastName, email, password, role}: O
   }
 }
 
-
-
 /**
  *  Update user password in DB
  */
@@ -46,10 +44,26 @@ export async function updateUserPassword({id, password}: Pick<IUser, 'id' | 'pas
     const {password: _, ...result} = data
     return result
   } catch (error) {
+    console.error('🍒', error)
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === 'P2025') throw new Error('User not found'); // P2025 — запись не найдена
     }
     throw error;
+  }
+}
+
+/**
+ *  Compare user password from DB
+ */
+export async function checkPassword({id, password}:Pick<IUser, 'id' | 'password'>) {
+  try {
+    const user = await prisma.user.findFirst({where: {id}})
+    return user && await comparePassword(password, user.password)
+  } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError) {
+      if (e.code === 'P2025') throw new Error('User not found'); // P2025 — запись не найдена
+    }
+    throw e
   }
 }
 

@@ -8,4 +8,4 @@ export const configPinoLogger = {
       singleLine: false,
     }
   }
-}
+} as const;
