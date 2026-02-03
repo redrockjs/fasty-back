@@ -1,16 +1,3 @@
-import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
-
-const serverHttpAcceptSchema = {
-  type: "object",
-  properties: {
-    message: {type: "string"},
-    result: {
-      id: {type: "string"},
-      name: {type: "string"},
-    }
-  }
-}
-
 export const loginUserSchema = {
   schema: {
     description: "Login user",
@@ -23,11 +10,6 @@ export const loginUserSchema = {
         password: {type: "string", minLength: 8, maxLength: 24},
       },
       additionalProperties: false
-    },
-    response: {
-      200: serverHttpAcceptSchema,
-      // 404: clientHttpErrorSchema,
-      // 500: serverHttpErrorSchema,
     }
   }
 }
@@ -43,11 +25,6 @@ export const refreshTokenSchema = {
         refreshToken: {type: "string"},
       },
       additionalProperties: false
-    },
-    response: {
-      200: serverHttpAcceptSchema,
-      // 404: clientHttpErrorSchema,
-      // 500: serverHttpErrorSchema,
     }
   }
 }
@@ -63,11 +40,6 @@ export const logoutUserSchema = {
         refreshToken: {type: "string"},
       },
       additionalProperties: false
-    },
-    response: {
-      200: serverHttpAcceptSchema,
-      // 404: clientHttpErrorSchema,
-      // 500: serverHttpErrorSchema,
     }
   }
 }
@@ -83,15 +55,11 @@ export const createUserSchema = {
         firstName: {type: "string", minLength: 2},
         lastName: {type: "string", minLength: 2},
         email: {type: "string", format: "email"},
-        password: {type: "string", minLength: 6, maxLength: 24},
+        password: {type: "string", minLength: 8, maxLength: 24},
         role: {type: "string", enum: ["ADMIN", "USER"]},
       },
       additionalProperties: false
     },
-    response: {
-      201: serverHttpAcceptSchema,
-      //500: serverHttpErrorSchema,
-    }
   }
 }
 
@@ -107,11 +75,6 @@ export const updatePasswordSchema = {
         password: {type: "string", minLength: 8, maxLength: 24},
       },
       additionalProperties: false
-    },
-    response: {
-      200: serverHttpAcceptSchema,
-      // 404: clientHttpErrorSchema,
-      // 500: serverHttpErrorSchema,
     }
   }
 }
@@ -119,11 +82,13 @@ export const updatePasswordSchema = {
 export const deleteUserSchema = {
   schema: {
     description: "Delete user",
-    tags: ["Auth"],
-    response: {
-      200: serverHttpAcceptSchema,
-      // 404: clientHttpErrorSchema,
-      // 500: serverHttpErrorSchema,
-    }
+    tags: ["Auth"]
+  }
+}
+
+export const getUserInfoSchema = {
+  schema: {
+    description: "Get user information",
+    tags: ["Auth"]
   }
 }

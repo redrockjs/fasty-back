@@ -5,7 +5,7 @@ import {
   refreshTokenHandler,
   createUserHandler,
   updatePasswordHandler,
-  deleteUserHandler
+  deleteUserHandler, getMeHandler
 } from "./auth.controller.js";
 import {
   loginUserSchema,
@@ -13,10 +13,11 @@ import {
   logoutUserSchema,
   createUserSchema,
   updatePasswordSchema,
-  deleteUserSchema,
+  deleteUserSchema, getUserInfoSchema,
 } from "./auth.schema.js";
 
 async function authRoutes(fastify: FastifyInstance) {
+  fastify.get('/me', getUserInfoSchema, getMeHandler)
   fastify.post('/login', loginUserSchema, loginUserHandler)
   fastify.post('/logout', logoutUserSchema, logoutUserHandler)
   fastify.post('/refresh', refreshTokenSchema, refreshTokenHandler)

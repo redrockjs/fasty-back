@@ -151,3 +151,6 @@ export async function deleteUserHandler(request: FastifyRequest<{
   }
 }
 
+export async function getMeHandler() {
+
+}
