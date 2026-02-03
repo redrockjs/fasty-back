@@ -1,5 +1,5 @@
 import {type FastifyReply, type FastifyRequest} from "fastify";
-import {createUser, loginUser, logoutUser, refreshAccessToken} from "./auth.service.js";
+import {createUser, loginUser, logoutUser, refreshAccessToken, updateUserPassword} from "./auth.service.js";
 import type {IUser} from "./auth.types.js";
 
 type UserRequest = Omit<IUser, 'id' | 'createdAt'>
@@ -81,12 +81,15 @@ export async function createUserHandler(request: FastifyRequest<{
     const {firstName, lastName, email, password, role} = request.body
 
     const user = await createUser({firstName, lastName, email, password, role})
-    //
-    // return reply.code(201).send({
-    //   message: `Successfully register user with id: ${user.id}`,
-    //   result: 'success'
-    // })
-  } catch (error) {
+
+    return reply.code(201).send({
+      message: `Successfully register user ${firstName} ${lastName} with id: ${user?.id}`,
+      result: 'success'
+    })
+  } catch (e) {
+    if (e instanceof Error && e.message === 'EMAIL_ALREADY_EXISTS') {
+      return reply.code(409).send({message: 'User already exists, try unique email address'})
+    }
     return reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -98,13 +101,12 @@ export async function updatePasswordHandler(request: FastifyRequest<{
   try {
     const {id} = request.params
     const {password, oldPassword} = request.body
-    console.log('🍒', id, password, oldPassword)
 
     return reply.code(200).send({
       message: 'Update password',
       result: 'success'
     })
-  } catch (error) {
+  } catch (e) {
     return reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -120,10 +122,10 @@ export async function deleteUserHandler(request: FastifyRequest<{
       message: `Successfully delete user with id: ${id}`,
       result: 'success'
     })
-  } catch (error) {
-    request.log.error(error)
-    if (error instanceof Error && error.message === 'User not found') {
-      return reply.code(404).send({message: error.message});
+  } catch (e) {
+    request.log.error(e)
+    if (e instanceof Error && e.message === 'User not found') {
+      return reply.code(404).send({message: 'User not found'});
     }
     return reply.code(500).send({message: "Something went wrong"});
   }

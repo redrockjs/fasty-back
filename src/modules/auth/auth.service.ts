@@ -10,9 +10,6 @@ import type {IUser} from "./auth.types.js";
 export async function createUser({firstName, lastName, email, password, role}: Omit<IUser, 'id' | 'createdAt'>) {
 
   const passwordHash = await hashPassword(password);
-
-  console.log('🍒', firstName, lastName, email, password, role, passwordHash);
-
   try {
     const data = await prisma.user.create({
       data: {
@@ -27,9 +24,14 @@ export async function createUser({firstName, lastName, email, password, role}: O
     return result
 
   } catch (error) {
-    console.log('🍒', error)
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') throw new Error('EMAIL_ALREADY_EXISTS') // P2002 Some field not found
+    }
+    throw error;
   }
 }
+
+
 
 /**
  *  Update user password in DB
@@ -45,7 +47,7 @@ export async function updateUserPassword({id, password}: Pick<IUser, 'id' | 'pas
     return result
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
-      if (error.code === 'P2025') throw new Error('City not found'); // P2025 — запись не найдена
+      if (error.code === 'P2025') throw new Error('User not found'); // P2025 — запись не найдена
     }
     throw error;
   }
