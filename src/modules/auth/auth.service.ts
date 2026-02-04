@@ -24,8 +24,24 @@ export async function createUser({firstName, lastName, email, password, role}: O
     return result
 
   } catch (error) {
+    console.error('🍒', error)
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === 'P2002') throw new Error('EMAIL_ALREADY_EXISTS') // P2002 Some field not found
+    }
+    throw error;
+  }
+}
+
+export async function getUserInformation({id}: Pick<IUser, 'id'>) {
+  try {
+    const data = await prisma.user.findUnique({where: {id}});
+    if (!data) return null;
+    const {password, ...result} = data
+    return result;
+  } catch (error) {
+    console.error('🍒', error)
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') throw new Error('User not found'); // P2025 — запись не найдена
     }
     throw error;
   }
@@ -55,15 +71,16 @@ export async function updateUserPassword({id, password}: Pick<IUser, 'id' | 'pas
 /**
  *  Compare user password from DB
  */
-export async function checkPassword({id, password}:Pick<IUser, 'id' | 'password'>) {
+export async function checkPassword({id, password}: Pick<IUser, 'id' | 'password'>) {
   try {
     const user = await prisma.user.findFirst({where: {id}})
     return user && await comparePassword(password, user.password)
-  } catch (e) {
-    if (e instanceof PrismaClientKnownRequestError) {
-      if (e.code === 'P2025') throw new Error('User not found'); // P2025 — запись не найдена
+  } catch (error) {
+    console.error('🍒', error)
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') throw new Error('User not found'); // P2025 — запись не найдена
     }
-    throw e
+    throw error
   }
 }
 
@@ -89,26 +106,31 @@ export async function deleteUser({id}: Pick<IUser, 'id'>) {
  *  Login user
  */
 export async function loginUser({email, password}: Pick<IUser, 'email' | 'password'>) {
-  const user = await prisma.user.findUnique({where: {email}});
-  if (!user) throw new Error('Invalid credentials');
+  try {
+    const user = await prisma.user.findUnique({where: {email}});
+    if (!user) throw new Error('Invalid credentials');
 
-  const isValid = await comparePassword(password, user.password)
-  if (!isValid) throw new Error('Invalid credentials');
+    const isValid = await comparePassword(password, user.password)
+    if (!isValid) throw new Error('Invalid credentials');
 
-  const refreshToken = generateRefreshToken()
-  const refreshTokenHash = await hashPassword(refreshToken)
+    const refreshToken = generateRefreshToken()
+    const refreshTokenHash = await hashPassword(refreshToken)
 
-  await prisma.refreshToken.create({
-    data: {
-      token: refreshTokenHash,
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    await prisma.refreshToken.create({
+      data: {
+        token: refreshTokenHash,
+        userId: user.id,
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      }
+    })
+
+    return {
+      id: user.id,
+      refreshToken
     }
-  })
-
-  return {
-    id: user.id,
-    refreshToken
+  } catch (error) {
+    console.log('🍒', error)
+    throw error;
   }
 }
 
@@ -116,46 +138,55 @@ export async function loginUser({email, password}: Pick<IUser, 'email' | 'passwo
  *  Logout user
  */
 export async function logoutUser({refreshToken}: { refreshToken: string }) {
+  try {
+    const result = await prisma.refreshToken.update({
+      where: {
+        token: refreshToken
+      },
+      data: {
+        revoked: true
+      }
+    })
 
-  const result = await prisma.refreshToken.update({
-    where: {
-      token: refreshToken
-    },
-    data: {
-      revoked: true
-    }
-  })
-
-  return result;
+    return result;
+  } catch (error) {
+    console.log('🍒', error)
+    throw error;
+  }
 }
 
 /**
  *  Refresh token
  */
 export async function refreshAccessToken({refreshToken}: { refreshToken: string }) {
-  const tokens = await prisma.refreshToken.findMany({
-    where: {revoked: false},
-    include: {user: true}
-  })
+  try {
+    const tokens = await prisma.refreshToken.findMany({
+      where: {revoked: false},
+      include: {user: true}
+    })
 
-  let storedToken = null
+    let storedToken = null
 
-  for (const t of tokens) {
-    if (await comparePassword(refreshToken, t.token)) {
-      storedToken = t
-      break
+    for (const t of tokens) {
+      if (await comparePassword(refreshToken, t.token)) {
+        storedToken = t
+        break
+      }
     }
-  }
 
-  if (!storedToken) throw new Error('Invalid refresh token');
-  if (storedToken.expiresAt < new Date()) throw new Error('Expired refresh token');
+    if (!storedToken) throw new Error('Invalid refresh token');
+    if (storedToken.expiresAt < new Date()) throw new Error('Expired refresh token');
 
-  await prisma.refreshToken.update({
-    where: {id: storedToken.id},
-    data: {revoked: true}
-  })
+    await prisma.refreshToken.update({
+      where: {id: storedToken.id},
+      data: {revoked: true}
+    })
 
-  return {
-    id: storedToken.id,
+    return {
+      id: storedToken.id,
+    }
+  } catch (error) {
+    console.error('🍒', error)
+    throw error;
   }
 }

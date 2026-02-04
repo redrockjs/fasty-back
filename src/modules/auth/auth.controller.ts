@@ -6,7 +6,8 @@ import {
   logoutUser,
   refreshAccessToken,
   updateUserPassword,
-  checkPassword
+  checkPassword,
+  getUserInformation
 } from "./auth.service.js";
 import type {IUser} from "./auth.types.js";
 
@@ -39,6 +40,7 @@ export async function loginUserHandler(request: FastifyRequest<{
       refresh: refreshToken,
     })
   } catch (error) {
+    request.log.error(error)
     return reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -61,6 +63,7 @@ export async function refreshTokenHandler(request: FastifyRequest<{
       refresh: refreshToken
     })
   } catch (error) {
+    request.log.error(error)
     return reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -78,6 +81,7 @@ export async function logoutUserHandler(request: FastifyRequest<{
       result: 'success'
     })
   } catch (error) {
+    request.log.error(error)
     return reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -94,8 +98,9 @@ export async function createUserHandler(request: FastifyRequest<{
       message: `Successfully register user ${firstName} ${lastName} with id: ${user?.id}`,
       result: 'success'
     })
-  } catch (e) {
-    if (e instanceof Error && e.message === 'EMAIL_ALREADY_EXISTS') {
+  } catch (error) {
+    request.log.error(error)
+    if (error instanceof Error && error.message === 'EMAIL_ALREADY_EXISTS') {
       return reply.code(409).send({message: 'User already exists, try unique email address'})
     }
     return reply.code(500).send({message: "Something went wrong"});
@@ -125,7 +130,8 @@ export async function updatePasswordHandler(request: FastifyRequest<{
       message: `Password updated for user with id: ${id}`,
       result: 'success'
     })
-  } catch (e) {
+  } catch (error) {
+    request.log.error(error)
     return reply.code(500).send({message: "Something went wrong"});
   }
 }
@@ -142,15 +148,27 @@ export async function deleteUserHandler(request: FastifyRequest<{
       message: `Successfully delete user with id: ${id}`,
       result: 'success'
     })
-  } catch (e) {
-    request.log.error(e)
-    if (e instanceof Error && e.message === 'User not found') {
+  } catch (error) {
+    request.log.error(error)
+    if (error instanceof Error && error.message === 'User not found') {
       return reply.code(404).send({message: 'User not found'});
     }
     return reply.code(500).send({message: "Something went wrong"});
   }
 }
 
-export async function getMeHandler() {
-
+export async function getMeHandler(request: FastifyRequest<{
+  Params: Pick<IUser, 'id'>
+}>, reply: FastifyReply) {
+  try {
+    const {id} = request.params
+    const user = await getUserInformation({id})
+    return reply.code(200).send(user)
+  } catch (error) {
+    request.log.error(error)
+    if (error instanceof Error && error.message === 'User not found') {
+      return reply.code(404).send({message: 'User not found'});
+    }
+    return reply.code(500).send({message: "Something went wrong"});
+  }
 }
