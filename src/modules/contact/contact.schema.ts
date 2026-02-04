@@ -11,7 +11,7 @@ const serverHttpAcceptSchema = {
   }
 }
 
-const userSchema = {
+const contactSchema = {
   type: "object",
   required: [
     "firstName",
@@ -59,26 +59,26 @@ const userSchema = {
   additionalProperties: false
 }
 
-export const allUsersSchema = {
+export const allContactsSchema = {
   schema: {
-    description: "Get all users",
-    tags: ["User"],
+    description: "Get all contacts",
+    tags: ["Contact"],
     response: {
       200: {
         type: "array",
-        items: userSchema,
+        items: contactSchema,
       },
       500: serverHttpErrorSchema
     }
   }
 }
 
-export const singleUserSchema = {
+export const singleContactSchema = {
   schema: {
-    description: "Get a single user",
-    tags: ["User"],
+    description: "Get a single contact",
+    tags: ["Contact"],
     response: {
-      200: userSchema,
+      200: contactSchema,
       400: clientHttpErrorSchema,
       404: clientHttpErrorSchema,
       500: serverHttpErrorSchema,
@@ -86,11 +86,11 @@ export const singleUserSchema = {
   }
 }
 
-export const createUserSchema = {
+export const createContactSchema = {
   schema: {
-    description: "Create user",
-    tags: ["User"],
-    body: userSchema,
+    description: "Create contact",
+    tags: ["Contact"],
+    body: contactSchema,
     response: {
       201: serverHttpAcceptSchema,
       500: serverHttpErrorSchema,
@@ -98,10 +98,11 @@ export const createUserSchema = {
   }
 }
 
-export const deleteUserSchema = {
+export const updateContactSchema = {
   schema: {
-    description: "Delete user",
-    tags: ["User"],
+    description: "Update contact",
+    tags: ["Contact"],
+    body: contactSchema,
     response: {
       200: serverHttpAcceptSchema,
       404: clientHttpErrorSchema,
@@ -110,11 +111,10 @@ export const deleteUserSchema = {
   }
 }
 
-export const updateUserSchema = {
+export const deleteContactSchema = {
   schema: {
-    description: "Update user",
-    tags: ["User"],
-    body: userSchema,
+    description: "Delete contact",
+    tags: ["Contact"],
     response: {
       200: serverHttpAcceptSchema,
       404: clientHttpErrorSchema,

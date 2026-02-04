@@ -1,21 +1,21 @@
 import {prisma} from "../../shared/config/prisma.js";
-import type {TUser} from "./user.types.js";
-import {normalizeUser} from "./user.mapper.js";
+import type {IContact} from "./contact.types.js";
+import {normalizeContact} from "./contact.mapper.js";
 
 /**
- * Get all users from DB
+ * Get all contacts from DB
  */
-export async function getAllUsers() {
-  const users = await prisma.user.findMany();
+export async function getAllContacts() {
+  const contacts = await prisma.contact.findMany();
 
-  return users;
+  return contacts;
 }
 
 /**
- * Get user by ID from DB
+ * Get contact by ID from DB
  */
-export async function getUserById(id: string) {
-  const user = await prisma.user.findUnique({
+export async function getContactById(id: string) {
+  const user = await prisma.contact.findUnique({
     where: {
       id: id,
     },
@@ -38,17 +38,17 @@ export async function getUserById(id: string) {
     return null
   }
 
-  return normalizeUser(user);
+  return normalizeContact(user);
 }
 
 /**
- * Create user in DB
+ * Create contact in DB
  */
-export async function createUser({...props}: TUser) {
+export async function createContact({...props}: IContact) {
 
   const {firstName, midName, lastName, email, company, department, position, addresses, phones} = props
 
-  const result = await prisma.user.create({
+  const result = await prisma.contact.create({
     data: {
       firstName,
       midName,
@@ -93,15 +93,15 @@ export async function createUser({...props}: TUser) {
 
           region: {
             connectOrCreate: {
-              where: { name: address.region },
-              create: { name: address.region },
+              where: {name: address.region},
+              create: {name: address.region},
             },
           },
 
           city: {
             connectOrCreate: {
-              where: { name: address.city },
-              create: { name: address.city },
+              where: {name: address.city},
+              create: {name: address.city},
             },
           },
         })),
@@ -115,10 +115,10 @@ export async function createUser({...props}: TUser) {
 }
 
 /**
- * Delete user by ID from DB
+ * Delete contact by ID from DB
  */
-export async function deleteUser(id: string) {
-  const result = await prisma.user.delete({
+export async function deleteContact(id: string) {
+  const result = await prisma.contact.delete({
     where: {
       id: id,
     }
@@ -127,9 +127,9 @@ export async function deleteUser(id: string) {
 }
 
 /**
- * Update user by ID from DB
+ * Update contact by ID from DB
  */
-export async function updateUser({...props}: { requestId: string } & TUser) {
+export async function updateContact({...props}: { requestId: string } & IContact) {
 
   const {requestId, firstName, midName, lastName, email, company, department, position, addresses, phones} = props
 
@@ -177,14 +177,14 @@ export async function updateUser({...props}: { requestId: string } & TUser) {
           apartment: Number(address.apartment),
           region: {
             connectOrCreate: {
-              where: { name: address.region },
-              create: { name: address.region },
+              where: {name: address.region},
+              create: {name: address.region},
             },
           },
           city: {
             connectOrCreate: {
-              where: { name: address.city },
-              create: { name: address.city },
+              where: {name: address.city},
+              create: {name: address.city},
             },
           },
         })),
@@ -202,7 +202,7 @@ export async function updateUser({...props}: { requestId: string } & TUser) {
       }
     }
 
-    return tx.user.update({
+    return tx.contact.update({
       where: {id: requestId},
       data,
       include: {

@@ -19,11 +19,11 @@ src/
  ├── modules/              # бизнес-модули (feature-based)
  │    ├── user/
  │    │    ├── user.routes.ts
- │    │    ├── user.controller.ts
- │    │    ├── user.service.ts
+ │    │    ├── contact.controller.ts
+ │    │    ├── contact.service.ts
  │    │    ├── user.repository.ts
- │    │    ├── user.schema.ts
- │    │    └── user.types.ts
+ │    │    ├── contact.schema.ts
+ │    │    └── contact.types.ts
  │    │
  │    └── auth/
  │         ├── auth.routes.ts
