@@ -1,9 +1,10 @@
-import {type FastifyInstance} from 'fastify'
+import fp from 'fastify-plugin'
+import {type FastifyInstance, type FastifyReply, type FastifyRequest} from 'fastify'
 
-export async function authPlugin(fastify: FastifyInstance) {
+async function authPlugin(fastify: FastifyInstance) {
   fastify.decorate(
     'authenticate',
-    async (request: any, reply: any) => {
+    async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
       try {
         await request.jwtVerify()
       } catch (err) {
@@ -14,3 +15,5 @@ export async function authPlugin(fastify: FastifyInstance) {
     }
   )
 }
+
+export default fp(authPlugin)

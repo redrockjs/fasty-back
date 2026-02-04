@@ -5,7 +5,7 @@ import swaggerUi from '@fastify/swagger-ui'
 import jwt from '@fastify/jwt'
 import {swaggerConfig} from "./shared/config/swagger.js";
 import {swaggerUIConfig} from "./shared/config/swagger-ui.js";
-import {authPlugin} from "./modules/auth/auth.plugin.js";
+import authPlugin from "./modules/auth/auth.plugin.js";
 import {ROUTES} from "./shared/const/routes.js";
 import heartbeatRoutes from "./modules/heartbeat/heartbeat.route.js";
 import companyRoutes from "./modules/company/company.route.js";

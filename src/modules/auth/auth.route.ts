@@ -5,7 +5,8 @@ import {
   refreshTokenHandler,
   createUserHandler,
   updatePasswordHandler,
-  deleteUserHandler, getMeHandler
+  deleteUserHandler,
+  getMeHandler
 } from "./auth.controller.js";
 import {
   loginUserSchema,
@@ -19,7 +20,7 @@ import {
 
 async function authRoutes(fastify: FastifyInstance) {
   fastify.get('/me', {
-    preHandler:[],
+    preHandler: [fastify.authenticate],
     schema: getUserInfoSchema.schema
   }, getMeHandler)
   fastify.post('/login', loginUserSchema, loginUserHandler)

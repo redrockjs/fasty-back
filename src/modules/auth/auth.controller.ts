@@ -157,11 +157,9 @@ export async function deleteUserHandler(request: FastifyRequest<{
   }
 }
 
-export async function getMeHandler(request: FastifyRequest<{
-  Params: Pick<IUser, 'id'>
-}>, reply: FastifyReply) {
+export async function getMeHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
-    const {id} = request.params
+    const {id} = request.user
     const user = await getUserInformation({id})
     return reply.code(200).send(user)
   } catch (error) {
