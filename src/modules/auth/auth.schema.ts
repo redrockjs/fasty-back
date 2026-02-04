@@ -1,3 +1,5 @@
+import { type FastifySchema } from 'fastify'
+
 export const loginUserSchema = {
   schema: {
     description: "Login user",
@@ -12,7 +14,7 @@ export const loginUserSchema = {
       additionalProperties: false
     }
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const refreshTokenSchema = {
   schema: {
@@ -27,7 +29,7 @@ export const refreshTokenSchema = {
       additionalProperties: false
     }
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const logoutUserSchema = {
   schema: {
@@ -42,7 +44,7 @@ export const logoutUserSchema = {
       additionalProperties: false
     }
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const createUserSchema = {
   schema: {
@@ -61,7 +63,7 @@ export const createUserSchema = {
       additionalProperties: false
     },
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const updatePasswordSchema = {
   schema: {
@@ -77,18 +79,18 @@ export const updatePasswordSchema = {
       additionalProperties: false
     }
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const deleteUserSchema = {
   schema: {
     description: "Delete user",
     tags: ["Auth"]
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const getUserInfoSchema = {
   schema: {
     description: "Get user information",
     tags: ["Auth"]
   }
-}
+} satisfies { schema: FastifySchema }

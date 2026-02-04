@@ -6,7 +6,7 @@ import {
   createUserHandler,
   updatePasswordHandler,
   deleteUserHandler,
-  getMeHandler
+  getMeHandler,
 } from "./auth.controller.js";
 import {
   loginUserSchema,
@@ -17,18 +17,29 @@ import {
   deleteUserSchema,
   getUserInfoSchema,
 } from "./auth.schema.js";
+import type {TToken, TUpdatePassword} from "./auth.types.js";
 
 async function authRoutes(fastify: FastifyInstance) {
-  fastify.get('/me', {
-    preHandler: [fastify.authenticate],
-    schema: getUserInfoSchema.schema
-  }, getMeHandler)
-  fastify.post('/login', loginUserSchema, loginUserHandler)
-  fastify.post('/logout', logoutUserSchema, logoutUserHandler)
-  fastify.post('/refresh', refreshTokenSchema, refreshTokenHandler)
+  // no-auth
   fastify.post('/', createUserSchema, createUserHandler)
-  fastify.patch('/:id', updatePasswordSchema, updatePasswordHandler)
-  fastify.delete('/:id', deleteUserSchema, deleteUserHandler)
+  fastify.post('/login', loginUserSchema, loginUserHandler)
+  fastify.post('/refresh', refreshTokenSchema, refreshTokenHandler)
+
+  // with-auth
+  fastify.get('/me', {preHandler: [fastify.authenticate], schema: getUserInfoSchema.schema}, getMeHandler)
+
+  fastify.post<{ Body: Pick<TToken, 'refreshToken'> }>('/logout',
+    {
+      preHandler: [fastify.authenticate],
+      schema: logoutUserSchema.schema
+    }, logoutUserHandler)
+
+  fastify.patch<{ Body: TUpdatePassword }>('/', {
+    preHandler: [fastify.authenticate],
+    schema: updatePasswordSchema.schema
+  }, updatePasswordHandler)
+
+  fastify.delete('/', {preHandler: [fastify.authenticate], schema: deleteUserSchema.schema}, deleteUserHandler)
 }
 
 export default authRoutes;

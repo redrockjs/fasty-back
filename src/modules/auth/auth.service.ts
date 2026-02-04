@@ -34,6 +34,7 @@ export async function createUser({firstName, lastName, email, password, role}: O
 
 export async function getUserInformation({id}: Pick<IUser, 'id'>) {
   try {
+
     const data = await prisma.user.findUnique({where: {id}});
     if (!data) return null;
     const {password, ...result} = data
@@ -139,14 +140,28 @@ export async function loginUser({email, password}: Pick<IUser, 'email' | 'passwo
  */
 export async function logoutUser({refreshToken}: { refreshToken: string }) {
   try {
-    const result = await prisma.refreshToken.update({
-      where: {
-        token: refreshToken
-      },
-      data: {
-        revoked: true
-      }
+    const tokens = await prisma.refreshToken.findMany({
+      where: {revoked: false},
+      include: {user: true}
     })
+
+    let storedToken = null
+
+    for (const t of tokens) {
+      if (await comparePassword(refreshToken, t.token)) {
+        storedToken = t
+        break
+      }
+    }
+
+    if (!storedToken) throw new Error('Invalid refresh token');
+
+    const result = await prisma.refreshToken.update({
+      where: {id: storedToken.id},
+      data: {revoked: true}
+    })
+
+    console.log('🍒', result)
 
     return result;
   } catch (error) {
@@ -175,15 +190,17 @@ export async function refreshAccessToken({refreshToken}: { refreshToken: string 
     }
 
     if (!storedToken) throw new Error('Invalid refresh token');
-    if (storedToken.expiresAt < new Date()) throw new Error('Expired refresh token');
+    if (storedToken.expiresAt < new Date()) {
+      await prisma.refreshToken.update({
+        where: {id: storedToken.id},
+        data: {revoked: true}
+      })
 
-    await prisma.refreshToken.update({
-      where: {id: storedToken.id},
-      data: {revoked: true}
-    })
+      throw new Error('Expired refresh token');
+    }
 
     return {
-      id: storedToken.id,
+       id: storedToken.userId,
     }
   } catch (error) {
     console.error('🍒', error)
