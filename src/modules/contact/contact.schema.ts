@@ -1,4 +1,4 @@
-import { type FastifySchema } from 'fastify'
+import {type FastifySchema} from 'fastify'
 
 const serverHttpAcceptSchema = {
   type: "object",
@@ -88,7 +88,39 @@ export const createContactSchema = {
   schema: {
     description: "Create contact",
     tags: ["Contact"],
-    body: contactSchema,
+    consumes: ["multipart/form-data"],
+    // body: {
+    //   type: "object",
+    //   required: [
+    //     "firstName",
+    //     "lastName",
+    //     "email",
+    //     "company",
+    //     "department",
+    //     "position",
+    //     "street",
+    //     "building",
+    //     "apartment",
+    //     "region",
+    //     "city",
+    //     "phones"
+    //   ],
+    //   properties: {
+    //     firstName: {type: "string"},
+    //     midName: {type: "string"},
+    //     lastName: {type: "string"},
+    //     email: {type: "string", format: "email"},
+    //     company: {type: "string"},
+    //     department: {type: "string"},
+    //     position: {type: "string"},
+    //     street: {type: "string"},
+    //     building: {type: "number"},
+    //     apartment: {type: "number"},
+    //     region: {type: "string"},
+    //     city: {type: "string"},
+    //     phones: {type: "string"},
+    //   }
+    // },
     response: {
       201: serverHttpAcceptSchema,
     }

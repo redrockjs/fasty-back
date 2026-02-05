@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
 import jwt from '@fastify/jwt'
+import multipart from "@fastify/multipart";
 import {swaggerConfig} from "./shared/config/swagger.js";
 import {swaggerUIConfig} from "./shared/config/swagger-ui.js";
 import authPlugin from "./modules/auth/auth.plugin.js";
@@ -24,7 +25,7 @@ export function buildApp(options: Partial<FastifyServerOptions> = {}) {
     ...options
   })
 
-  // Swagger UI generation
+  // ✅ Swagger UI generation
   fastify.register(swagger, swaggerConfig);
   fastify.register(swaggerUi, swaggerUIConfig);
   fastify.ready(err => {
@@ -32,11 +33,20 @@ export function buildApp(options: Partial<FastifyServerOptions> = {}) {
     fastify.swagger()
   })
 
-  //Authentification
+  // ✅ Authentification
   fastify.register(jwt, {secret: process.env.JWT_SECRET!})
   fastify.register(authPlugin)
 
-  //Route registration
+  // ✅ Multipart
+  fastify.register(multipart, {
+    attachFieldsToBody: true,
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10 MB
+    }
+  });
+
+
+  // ✅ Route registration
   fastify.register(heartbeatRoutes, {prefix: ROUTES.HEARTBEAT})           // heartbeat routes
   fastify.register(cityRoutes, {prefix: ROUTES.CITY})                     // city routes
   fastify.register(regionRoutes, {prefix: ROUTES.REGION})                 // region routes

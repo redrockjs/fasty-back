@@ -48,20 +48,23 @@ export async function createContactHandler(request: FastifyRequest<{
   Body: CreateContactRequest
 }>, reply: FastifyReply) {
   try {
+
     const contact = request.body
-    const result = await createContact(contact)
-    request.log.info(result)
+    console.log('🍒🍒🍒', contact);
+
+    // const contact = request.body
+    //const result = await createContact(contact)
+    //request.log.info(result)
     reply.code(201)
 
-    return {
-      message: 'Successfully created contact',
-      result: result
-    }
+    return {message: 'Successfully created contact'}
   } catch (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
 }
+
+//[{"phone": "19991234567","type": "HOME"},{"phone": "15551112233", "type": "WORK"}]
 
 export async function deleteContactHandler(request: FastifyRequest<{
   Params: GetContactRequest
@@ -72,10 +75,7 @@ export async function deleteContactHandler(request: FastifyRequest<{
     request.log.info(result)
     reply.code(200)
 
-    return {
-      message: `Successfully delete user with id: ${id}`,
-      result: result
-    }
+    return {message: `Successfully delete user with id: ${id} \\n ${result}`}
   } catch (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
@@ -94,10 +94,7 @@ export async function updateContactHandler(request: FastifyRequest<{
     request.log.info(result)
     reply.code(200)
 
-    return {
-      message: `Successfully updated user with id: ${requestId}`,
-      result: result
-    }
+    return {message: `Successfully updated user with id: ${requestId}`}
   } catch (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
