@@ -1,12 +1,18 @@
 import {prisma} from "../../shared/config/prisma.js";
-import {PrismaClientKnownRequestError} from "@prisma/client/runtime/client";
+import {prismaErrorLogger} from "../../helpers/prismaError.js";
 
 /**
  * Get all cities from DB
  */
 export async function getAllCities() {
-  const cities = await prisma.city.findMany();
-  return cities;
+  try {
+    const cities = await prisma.city.findMany();
+    return cities;
+  } catch (error) {
+    prismaErrorLogger(error)
+    throw error;
+  }
+
 }
 
 
@@ -14,20 +20,30 @@ export async function getAllCities() {
  * Get city by ID from DB
  */
 export async function getCityById(id: string) {
-  const city = await prisma.city.findUnique({
-    where: {id}
-  })
-  return city;
+  try {
+    const city = await prisma.city.findUnique({
+      where: {id}
+    })
+    return city;
+  } catch (error) {
+    prismaErrorLogger(error)
+    throw error;
+  }
 }
 
 /**
  * Create city in DB
  */
 export async function createCity(name: string) {
-  const result = await prisma.city.create({
-    data: {name}
-  })
-  return result
+  try {
+    const result = await prisma.city.create({
+      data: {name}
+    })
+    return result
+  } catch (error) {
+    prismaErrorLogger(error)
+    throw error;
+  }
 }
 
 /**
@@ -40,9 +56,7 @@ export async function deleteCity(id: string) {
     })
     return result
   } catch (error) {
-    if (error instanceof PrismaClientKnownRequestError) {
-      if (error.code === 'P2025') throw new Error('City not found'); // P2025 — запись не найдена
-    }
+    prismaErrorLogger(error)
     throw error;
   }
 }
@@ -58,9 +72,7 @@ export async function updateCity(id: string, name: string) {
     })
     return result
   } catch (error) {
-    if (error instanceof PrismaClientKnownRequestError) {
-      if (error.code === 'P2025') throw new Error('City not found'); // P2025 — запись не найдена
-    }
+    prismaErrorLogger(error)
     throw error;
   }
 }
