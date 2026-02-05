@@ -67,11 +67,11 @@ enum PhoneType {
 model Address {
   id String @id @default(uuid())
 
-  region   Region @relation(fields: [regionId], references: [id]) // 1:1 address:region
-  regionId String @map("region_id") // 1:1 address:region
+  region   Region @relation(fields: [regionId], references: [id]) // N:1 address:region
+  regionId String @map("region_id") // N:1 address:region
 
-  city   City   @relation(fields: [cityId], references: [id]) // 1:1 address:city
-  cityId String @map("city_id") // 1:1 address:city
+  city   City   @relation(fields: [cityId], references: [id]) // N:1 address:city
+  cityId String @map("city_id") // N:1 address:city
 
   street    String
   building  Int

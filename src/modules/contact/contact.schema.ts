@@ -1,4 +1,4 @@
-import {clientHttpErrorSchema, serverHttpErrorSchema} from "../../shared/errors/errorHandler.js";
+import { type FastifySchema } from 'fastify'
 
 const serverHttpAcceptSchema = {
   type: "object",
@@ -32,14 +32,16 @@ const contactSchema = {
     department: {type: "string", minLength: 2},
     position: {type: "string", minLength: 2},
     addresses: {
-      type: "object",
-      required: ["region", "city", "street", "building", "apartment"],
-      properties: {
-        region: {type: "string", minLength: 1},
-        city: {type: "string", minLength: 1},
-        street: {type: "string", minLength: 1},
-        building: {type: "number"},
-        apartment: {type: "number"}
+      type: "array",
+      items: {
+        required: ["region", "city", "street", "building", "apartment"],
+        properties: {
+          region: {type: "string", minLength: 1},
+          city: {type: "string", minLength: 1},
+          street: {type: "string", minLength: 1},
+          building: {type: "number"},
+          apartment: {type: "number"}
+        },
       },
       additionalProperties: false
     },
@@ -47,9 +49,9 @@ const contactSchema = {
       type: "array",
       items: {
         type: "object",
-        required: ["number", "type"],
+        required: ["phone", "type"],
         properties: {
-          number: {type: "string", pattern: "^\\+?[0-9]{10,15}$"}, // только цифры
+          phone: {type: "string", pattern: "^\\+?[0-9]{10,15}$"}, // только цифры
           type: {type: "string", enum: ["HOME", "WORK", "MOBILE"]}
         },
         additionalProperties: false
@@ -67,11 +69,10 @@ export const allContactsSchema = {
       200: {
         type: "array",
         items: contactSchema,
-      },
-      500: serverHttpErrorSchema
+      }
     }
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const singleContactSchema = {
   schema: {
@@ -79,12 +80,9 @@ export const singleContactSchema = {
     tags: ["Contact"],
     response: {
       200: contactSchema,
-      400: clientHttpErrorSchema,
-      404: clientHttpErrorSchema,
-      500: serverHttpErrorSchema,
     }
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const createContactSchema = {
   schema: {
@@ -93,10 +91,9 @@ export const createContactSchema = {
     body: contactSchema,
     response: {
       201: serverHttpAcceptSchema,
-      500: serverHttpErrorSchema,
     }
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const updateContactSchema = {
   schema: {
@@ -105,11 +102,9 @@ export const updateContactSchema = {
     body: contactSchema,
     response: {
       200: serverHttpAcceptSchema,
-      404: clientHttpErrorSchema,
-      500: serverHttpErrorSchema,
     }
   }
-}
+} satisfies { schema: FastifySchema }
 
 export const deleteContactSchema = {
   schema: {
@@ -117,8 +112,6 @@ export const deleteContactSchema = {
     tags: ["Contact"],
     response: {
       200: serverHttpAcceptSchema,
-      404: clientHttpErrorSchema,
-      500: serverHttpErrorSchema,
     }
   }
-}
+} satisfies { schema: FastifySchema }

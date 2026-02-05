@@ -15,8 +15,8 @@ interface IAddress {
   region: string
   city: string
   street: string
-  building: string
-  apartment: string
+  building: number
+  apartment: number
 }
 
 interface IPhone {

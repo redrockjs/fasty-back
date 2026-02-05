@@ -6,14 +6,14 @@ import {
   updateContact,
   deleteContact
 } from "./contact.service.js";
-import type {TContact} from "./contact.types.js";
+import type {IContact} from "./contact.types.js";
 
 type GetContactRequest = {
   id: string
 }
 
-type CreateContactRequest = TContact
-type UpdateContactRequest = TContact
+type CreateContactRequest = IContact
+type UpdateContactRequest = IContact
 
 export async function getAllContactsHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
@@ -32,7 +32,7 @@ export async function getContactByIdHandler(request: FastifyRequest<{
   try {
     const {id} = request.params
 
-    //if (!id) reply.code(400).send({message: "Contact id is required"})
+    if (!id) reply.code(400).send({message: "Contact id is required"})
 
     const result = await getContactById(id);
     request.log.info(result)
