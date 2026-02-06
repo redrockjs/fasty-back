@@ -7,7 +7,7 @@ interface IContact {
   company: string
   department: string
   position: string
-  addresses: IAddress[]
+  address: IAddress
   phones: IPhone[]
 }
 

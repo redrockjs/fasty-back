@@ -14,7 +14,7 @@ type ContactMapper = Contact & {
   company: Company
   department: Department
   position: Position
-  addresses: AddressMapper[]
+  address: AddressMapper
   phones: Phone[]
 }
 
@@ -33,13 +33,13 @@ export function normalizeContact(contact: ContactMapper): IContact {
     company: contact.company.name,
     department: contact.department.name,
     position: contact.position.name,
-    addresses: contact.addresses.map(address => ({
-      region: address.region.name,
-      city: address.city.name,
-      street: address.street,
-      building: address.building,
-      apartment: address.apartment
-    })),
+    address: {
+      region: contact.address.region.name,
+      city: contact.address.city.name,
+      street: contact.address.street,
+      building: contact.address.building,
+      apartment: contact.address.apartment
+    },
     phones: contact.phones.map(phone => ({
       type: phone.type as PhoneType,
       phone: phone.phone,

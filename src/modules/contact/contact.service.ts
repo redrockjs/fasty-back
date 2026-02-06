@@ -13,7 +13,7 @@ export async function getAllContacts() {
         company: true,
         department: true,
         position: true,
-        addresses: {
+        address: {
           include: {
             region: true,
             city: true,
@@ -42,7 +42,7 @@ export async function getContactById(id: string) {
         company: true,
         department: true,
         position: true,
-        addresses: {
+        address: {
           include: {
             region: true,
             city: true,
@@ -65,7 +65,7 @@ export async function getContactById(id: string) {
  * Create contact in DB
  */
 export async function createContact({...props}: IContact) {
-  const {firstName, midName, lastName, email, company, department, position, addresses, phones} = props
+  const {firstName, midName, lastName, email, company, department, position, address, phones} = props
 
   try {
     const result = await prisma.contact.create({
@@ -105,8 +105,8 @@ export async function createContact({...props}: IContact) {
           }
         },
         // --- address ---
-        addresses: {
-          create: addresses.map(address => ({
+        address: {
+          create: {
             street: address.street,
             building: Number(address.building),
             apartment: Number(address.apartment),
@@ -124,7 +124,7 @@ export async function createContact({...props}: IContact) {
                 create: {name: address.city},
               },
             },
-          })),
+          },
         },
         phones: {
           create: phones
