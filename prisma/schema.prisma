@@ -71,7 +71,7 @@ model Address {
   regionId String @map("region_id") // N:1 address:region
 
   city   City   @relation(fields: [cityId], references: [id]) // N:1 address:city
-  cityId String @map("city_id") // N:1 address:city
+  cityId String @map("city_id") // N:1 address:contact
 
   street    String
   building  Int
@@ -88,16 +88,16 @@ model Contact {
   lastName  String
   email     String  @unique
 
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Restrict) // N:1 user:company
-  companyId String  @map("company_id") // N:1 user:company
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Restrict) // N:1 contact:company
+  companyId String  @map("company_id") // N:1 contact:company
 
-  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict) // N:1 user:department
-  departmentId String     @map("department_id") // 1:1 user:department
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict) // N:1 contact:department
+  departmentId String     @map("department_id") // 1:1 contact:department
 
-  position   Position @relation(fields: [positionId], references: [id], onDelete: Restrict) // N:1 user:position
-  positionId String   @map("position_id") // 1:1 user:position
+  position   Position @relation(fields: [positionId], references: [id], onDelete: Restrict) // N:1 contact:position
+  positionId String   @map("position_id") // 1:1 contact:position
 
-  addresses Address[] // 1:N user:addresses
+  addresses Address[] // 1:N contact:addresses
   phones    Phone[] // 1:N user:phones
 }
 

@@ -11,7 +11,6 @@ import type {IContact} from "./contact.types.js";
 type GetContactRequest = {
   id: string
 }
-
 type CreateContactRequest = IContact
 type UpdateContactRequest = IContact
 
@@ -48,13 +47,9 @@ export async function createContactHandler(request: FastifyRequest<{
   Body: CreateContactRequest
 }>, reply: FastifyReply) {
   try {
-
     const contact = request.body
-    console.log('🍒🍒🍒', contact);
-
-    // const contact = request.body
-    //const result = await createContact(contact)
-    //request.log.info(result)
+    const result = await createContact(contact)
+    request.log.info(result)
     reply.code(201)
 
     return {message: 'Successfully created contact'}
@@ -63,8 +58,6 @@ export async function createContactHandler(request: FastifyRequest<{
     reply.code(500).send({message: "Something went wrong"});
   }
 }
-
-//[{"phone": "19991234567","type": "HOME"},{"phone": "15551112233", "type": "WORK"}]
 
 export async function deleteContactHandler(request: FastifyRequest<{
   Params: GetContactRequest

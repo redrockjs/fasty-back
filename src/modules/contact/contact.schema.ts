@@ -43,7 +43,6 @@ const contactSchema = {
           apartment: {type: "number"}
         },
       },
-      additionalProperties: false
     },
     phones: {
       type: "array",
@@ -54,9 +53,8 @@ const contactSchema = {
           phone: {type: "string", pattern: "^\\+?[0-9]{10,15}$"}, // только цифры
           type: {type: "string", enum: ["HOME", "WORK", "MOBILE"]}
         },
-        additionalProperties: false
       }
-    }
+    },
   },
   additionalProperties: false
 }
@@ -89,38 +87,21 @@ export const createContactSchema = {
     description: "Create contact",
     tags: ["Contact"],
     consumes: ["multipart/form-data"],
-    // body: {
-    //   type: "object",
-    //   required: [
-    //     "firstName",
-    //     "lastName",
-    //     "email",
-    //     "company",
-    //     "department",
-    //     "position",
-    //     "street",
-    //     "building",
-    //     "apartment",
-    //     "region",
-    //     "city",
-    //     "phones"
-    //   ],
-    //   properties: {
-    //     firstName: {type: "string"},
-    //     midName: {type: "string"},
-    //     lastName: {type: "string"},
-    //     email: {type: "string", format: "email"},
-    //     company: {type: "string"},
-    //     department: {type: "string"},
-    //     position: {type: "string"},
-    //     street: {type: "string"},
-    //     building: {type: "number"},
-    //     apartment: {type: "number"},
-    //     region: {type: "string"},
-    //     city: {type: "string"},
-    //     phones: {type: "string"},
-    //   }
-    // },
+    body: {
+      type: "object",
+      allOf: [
+        contactSchema,
+        {
+          type: "object",
+          properties: {
+            files: {
+              type: "array",
+              items: {type: "string", format: "binary"}
+            }
+          }
+        }
+      ]
+    },
     response: {
       201: serverHttpAcceptSchema,
     }

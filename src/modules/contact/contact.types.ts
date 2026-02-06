@@ -31,4 +31,4 @@ enum PhoneType {
   OTHER = "OTHER",
 }
 
-export type {IContact, PhoneType}
+export type {IContact, IPhone, PhoneType}
