@@ -22,7 +22,8 @@ export async function getAllContacts() {
         phones: true,
       },
     });
-    return contacts.map(contact => normalizeContact(contact));
+    console.log('🍒',contacts);
+    //return contacts.map(contact => normalizeContact(contact));
   } catch (error) {
     prismaErrorLogger(error)
     throw error
@@ -54,7 +55,7 @@ export async function getContactById(id: string) {
 
     if (!user) return null
 
-    return normalizeContact(user);
+    //return normalizeContact(user);
   } catch (error) {
     prismaErrorLogger(error)
     throw error
@@ -108,8 +109,8 @@ export async function createContact({...props}: IContact) {
         address: {
           create: {
             street: address.street,
-            building: Number(address.building),
-            apartment: Number(address.apartment),
+            building: address.building,
+            apartment: address.apartment,
 
             region: {
               connectOrCreate: {
@@ -159,7 +160,7 @@ export async function deleteContact(id: string) {
  * Update contact by ID from DB
  */
 export async function updateContact({...props}: { requestId: string } & IContact) {
-  const {requestId, firstName, midName, lastName, email, company, department, position, addresses, phones} = props
+  const {requestId, firstName, midName, lastName, email, company, department, position, address, phones} = props
 
   try {
     return prisma.$transaction(async (tx) => {
@@ -197,10 +198,10 @@ export async function updateContact({...props}: { requestId: string } & IContact
         }
       }
 
-      if (addresses) {
+      if (address) {
         data.addresses = {
           deleteMany: {},
-          create: addresses.map(address => ({
+          connectOrCreate: {
             street: address.street,
             building: Number(address.building),
             apartment: Number(address.apartment),
@@ -216,7 +217,7 @@ export async function updateContact({...props}: { requestId: string } & IContact
                 create: {name: address.city},
               },
             },
-          })),
+          },
         }
       }
 
@@ -238,7 +239,7 @@ export async function updateContact({...props}: { requestId: string } & IContact
           company: true,
           department: true,
           position: true,
-          addresses: {include: {region: true, city: true}},
+          address: {include: {region: true, city: true}},
           phones: true,
         },
       })
