@@ -7,24 +7,22 @@ datasource db {
   provider = "postgresql"
 }
 
-// Geo
 model Region {
   id     String    @id @default(uuid())
   name   String    @unique
-  region Address[] // 1:N region:address
+  region Address[]
 }
 
 model City {
   id   String    @id @default(uuid())
   name String    @unique
-  city Address[] // 1:N city:address
+  city Address[]
 }
 
-// Organization
 model Company {
   id      String    @id @default(uuid())
   name    String    @unique
-  company Contact[] // 1:N company:user
+  company Contact[]
 
   @@map("Companies")
 }
@@ -32,7 +30,7 @@ model Company {
 model Department {
   id         String    @id @default(uuid())
   name       String    @unique
-  department Contact[] // 1:N company:department
+  department Contact[]
 
   @@map("Departments")
 }
@@ -40,45 +38,37 @@ model Department {
 model Position {
   id       String    @id @default(uuid())
   name     String    @unique
-  position Contact[] // 1:N company:position
+  position Contact[]
 
   @@map("Positions")
 }
 
-// Base
 model Phone {
-  id     String    @id @default(uuid())
-  phone  String
-  type   PhoneType
+  id    String    @id @default(uuid())
+  phone String
+  type  PhoneType
+
   userId String
-  user   Contact   @relation(fields: [userId], references: [id], onDelete: Cascade) // 1:N phone:user
+  user   Contact @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, type])
   @@map("Phones")
 }
 
-enum PhoneType {
-  WORK
-  MOBILE
-  HOME
-  OTHER
-}
-
 model Address {
-  id String @id @default(uuid())
-
-  region   Region @relation(fields: [regionId], references: [id]) // N:1 address:region
-  regionId String @map("region_id") // N:1 address:region
-
-  city   City   @relation(fields: [cityId], references: [id]) // N:1 address:city
-  cityId String @map("city_id") // N:1 address:contact
-
+  id        String @id @default(uuid())
   street    String
   building  Int
   apartment Int
 
-  user   Contact @relation(fields: [userId], references: [id], onDelete: Cascade) // N:1 addreses:user
-  userId String  @map("user_id") // N:1 addreses:user
+  city   City   @relation(fields: [cityId], references: [id])
+  cityId String @map("city_id")
+
+  region   Region @relation(fields: [regionId], references: [id])
+  regionId String @map("region_id")
+
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String  @map("contact_id")
 }
 
 model Contact {
@@ -88,42 +78,48 @@ model Contact {
   lastName  String
   email     String  @unique
 
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Restrict) // N:1 contact:company
-  companyId String  @map("company_id") // N:1 contact:company
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
 
-  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict) // N:1 contact:department
-  departmentId String     @map("department_id") // 1:1 contact:department
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId String     @map("department_id")
 
-  position   Position @relation(fields: [positionId], references: [id], onDelete: Restrict) // N:1 contact:position
-  positionId String   @map("position_id") // 1:1 contact:position
+  position   Position @relation(fields: [positionId], references: [id])
+  positionId String   @map("position_id")
 
-  addresses Address[] // 1:N contact:addresses
-  phones    Phone[] // 1:N user:phones
+  addresses Address[]
+  phones    Phone[]
 }
 
-//Authentification
 model User {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  role          Role           @default(USER)
+  createdAt     DateTime       @default(now())
+  firstName     String
+  lastName      String
   refreshTokens RefreshToken[]
 }
 
 model RefreshToken {
   id        String   @id @default(uuid())
   token     String   @unique
-  revoked   Boolean  @default(false)
   createdAt DateTime @default(now())
   expiresAt DateTime
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  revoked   Boolean  @default(false)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
   @@index([userId])
+}
+
+enum PhoneType {
+  WORK
+  MOBILE
+  HOME
+  OTHER
 }
 
 enum Role {
