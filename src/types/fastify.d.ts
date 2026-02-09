@@ -16,4 +16,8 @@ declare module 'fastify' {
       reply: FastifyReply
     ) => Promise<void>
   }
+  interface FastifyRequest {
+    filesData: MultipartFile[] | null;
+    fieldsData: Record<string, string> | null;
+  }
 }

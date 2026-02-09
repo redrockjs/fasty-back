@@ -4,10 +4,11 @@ interface IContact {
   midName: string | null
   lastName: string
   email: string
+  photo: string | null
   company: string
   department: string
   position: string
-  addresses: IAddress[]
+  address: IAddress
   phones: IPhone[]
 }
 
@@ -15,8 +16,8 @@ interface IAddress {
   region: string
   city: string
   street: string
-  building: string
-  apartment: string
+  building: number
+  apartment: number
 }
 
 interface IPhone {
@@ -31,4 +32,4 @@ enum PhoneType {
   OTHER = "OTHER",
 }
 
-export type {IContact, PhoneType}
+export type {IContact, IPhone, PhoneType}
