@@ -29,6 +29,7 @@ const contactSchema = {
     midName: {type: "string"},
     lastName: {type: "string", minLength: 2},
     email: {type: "string", format: "email"},
+    photo: {type: "string"},
     company: {type: "string", minLength: 2},
     department: {type: "string", minLength: 2},
     position: {type: "string", minLength: 2},
@@ -111,7 +112,21 @@ export const updateContactSchema = {
   schema: {
     description: "Update contact",
     tags: ["Contact"],
-    body: contactSchema,
+    body: {
+      type: "object",
+      allOf: [
+        contactSchema,
+        {
+          type: "object",
+          properties: {
+            files: {
+              type: "array",
+              items: {type: "string", format: "binary"}
+            }
+          }
+        }
+      ]
+    },
     response: {
       200: serverHttpAcceptSchema,
     }

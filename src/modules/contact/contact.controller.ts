@@ -1,8 +1,3 @@
-import fs from "fs";
-import path from "path";
-import {pipeline} from "stream/promises";
-import {v4 as uuidv4} from 'uuid';
-
 import {type FastifyReply, type FastifyRequest} from "fastify";
 import {
   getAllContacts,
@@ -12,6 +7,9 @@ import {
   deleteContact
 } from "./contact.service.js";
 import type {IContact} from "./contact.types.js";
+import deleteFileIfExists from "../../helpers/deleteFileIfExists.js";
+import {uploadFile} from "../../helpers/uploadFile.js";
+import type {MultipartFile} from "@fastify/multipart";
 
 type GetContactRequest = {
   id: string
@@ -54,30 +52,17 @@ export async function createContactHandler(request: FastifyRequest<{
     const contact = request.body
     const files = request.filesData ?? []
 
-    const uploadDir = path.join(process.cwd(), "uploads");
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, {recursive: true});
-    const savedFiles: string[] = [];
-
-    const file = files[0];
-    const ext = path.extname(file.filename);
-    const photo = `${uuidv4()}${ext}`;
-    const filePath = path.join(uploadDir, photo);
-    await pipeline(
-      file.file,
-      fs.createWriteStream(filePath)
-    );
-
-    savedFiles.push(photo);
+    const {uploadedFile} = await uploadFile({file: files[0]})
 
     const result = await createContact({
       ...contact,
-      photo
+      photo: uploadedFile
     })
     request.log.info(result)
     return reply.code(201).send({
       message: 'Successfully created contact',
       result: result,
-      files: savedFiles,
+      file: uploadedFile,
     })
   } catch
     (error) {
@@ -93,7 +78,10 @@ export async function deleteContactHandler(request: FastifyRequest<{
     const {id} = request.params
     const result = await deleteContact(id)
     request.log.info(result)
-    return reply.code(200).send({message: `Successfully delete user with id: ${id} \\n ${result}`})
+    return reply.code(200).send({
+      message: `Successfully delete user with id: ${id}`,
+      result: result,
+    })
   } catch (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
@@ -105,12 +93,42 @@ export async function updateContactHandler(request: FastifyRequest<{
   Body: UpdateContactRequest
 }>, reply: FastifyReply) {
   try {
-    const {id: requestId} = request.params
+    const {id} = request.params
     const contact = request.body
 
-    const result = await updateContact({requestId, ...contact})
+    const prevContact = await getContactById(id);
+    const prevPhoto = prevContact?.photo ?? null;
+
+    const files = request.filesData ?? []
+    const file: MultipartFile | null = (files[0] && files[0].filename) ? files[0] : null;
+
+    let result;
+
+    if (file) {
+      const {uploadedFile} = await uploadFile({file})
+
+      if (prevPhoto) await deleteFileIfExists({file:prevPhoto})
+
+      result = await updateContact({
+        requestId: id,
+        ...contact,
+        photo: uploadedFile
+      })
+    } else {
+      if (prevPhoto) await deleteFileIfExists({file:prevPhoto})
+      result = await updateContact({
+        requestId: id,
+        ...contact,
+        photo: prevPhoto ? prevPhoto : null
+      })
+    }
+
     request.log.info(result)
-    return reply.code(200).send({message: `Successfully updated user with id: ${requestId}`})
+    return reply.code(200).send({
+      message: `Successfully updated user with id: ${id}`,
+      result: result,
+      file: file ? uploadFile : null,
+    })
   } catch (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});

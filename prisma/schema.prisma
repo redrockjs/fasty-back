@@ -8,37 +8,37 @@ datasource db {
 }
 
 model Region {
-  id     String    @id @default(uuid())
-  name   String    @unique
-  region Address[]
+  id      String    @id @default(uuid())
+  name    String    @unique
+  address Address[]
 }
 
 model City {
-  id   String    @id @default(uuid())
-  name String    @unique
-  city Address[]
+  id      String    @id @default(uuid())
+  name    String    @unique
+  address Address[]
 }
 
 model Company {
   id      String    @id @default(uuid())
   name    String    @unique
-  company Contact[]
+  contact Contact[]
 
   @@map("Companies")
 }
 
 model Department {
-  id         String    @id @default(uuid())
-  name       String    @unique
-  department Contact[]
+  id      String    @id @default(uuid())
+  name    String    @unique
+  contact Contact[]
 
   @@map("Departments")
 }
 
 model Position {
-  id       String    @id @default(uuid())
-  name     String    @unique
-  position Contact[]
+  id      String    @id @default(uuid())
+  name    String    @unique
+  contact Contact[]
 
   @@map("Positions")
 }
@@ -75,7 +75,7 @@ model Contact {
   firstName String
   midName   String?
   lastName  String
-  email     String  @unique
+  email     String?
   photo     String?
 
   companyId String  @map("company_id")

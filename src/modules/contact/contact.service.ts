@@ -202,25 +202,43 @@ export async function updateContact({...props}: { requestId: string } & IContact
       }
 
       if (address) {
-        data.addresses = {
-          deleteMany: {},
-          connectOrCreate: {
-            street: address.street,
-            building: Number(address.building),
-            apartment: Number(address.apartment),
-            region: {
-              connectOrCreate: {
-                where: {name: address.region},
-                create: {name: address.region},
+        data.address = {
+          upsert: {
+            update: {
+              street: address.street,
+              building: address.building,
+              apartment: address.apartment,
+              region: {
+                connectOrCreate: {
+                  where: { name: address.region },
+                  create: { name: address.region }
+                }
               },
+              city: {
+                connectOrCreate: {
+                  where: { name: address.city },
+                  create: { name: address.city }
+                }
+              }
             },
-            city: {
-              connectOrCreate: {
-                where: {name: address.city},
-                create: {name: address.city},
+            create: {
+              street: address.street,
+              building: address.building,
+              apartment: address.apartment,
+              region: {
+                connectOrCreate: {
+                  where: { name: address.region },
+                  create: { name: address.region }
+                }
               },
-            },
-          },
+              city: {
+                connectOrCreate: {
+                  where: { name: address.city },
+                  create: { name: address.city }
+                }
+              }
+            }
+          }
         }
       }
 
