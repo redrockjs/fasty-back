@@ -17,13 +17,14 @@ export async function getAllContacts() {
           include: {
             region: true,
             city: true,
+            contact: true
           }
         },
         phones: true,
       },
     });
-    console.log('🍒',contacts);
-    //return contacts.map(contact => normalizeContact(contact));
+
+    return contacts.map(contact => normalizeContact(contact));
   } catch (error) {
     prismaErrorLogger(error)
     throw error
@@ -55,7 +56,7 @@ export async function getContactById(id: string) {
 
     if (!user) return null
 
-    //return normalizeContact(user);
+    return normalizeContact(user);
   } catch (error) {
     prismaErrorLogger(error)
     throw error

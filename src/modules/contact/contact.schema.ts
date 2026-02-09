@@ -20,10 +20,11 @@ const contactSchema = {
     "company",
     "department",
     "position",
-    "addresses",
+    "address",
     "phones"
   ],
   properties: {
+    id: {type: "string"},
     firstName: {type: "string", minLength: 2},
     midName: {type: "string"},
     lastName: {type: "string", minLength: 2},
@@ -31,17 +32,15 @@ const contactSchema = {
     company: {type: "string", minLength: 2},
     department: {type: "string", minLength: 2},
     position: {type: "string", minLength: 2},
-    addresses: {
-      type: "array",
-      items: {
-        required: ["region", "city", "street", "building", "apartment"],
-        properties: {
-          region: {type: "string", minLength: 1},
-          city: {type: "string", minLength: 1},
-          street: {type: "string", minLength: 1},
-          building: {type: "number"},
-          apartment: {type: "number"}
-        },
+    address: {
+      type: "object",
+      required: ["region", "city", "street", "building", "apartment"],
+      properties: {
+        region: {type: "string", minLength: 1},
+        city: {type: "string", minLength: 1},
+        street: {type: "string", minLength: 1},
+        building: {type: "number"},
+        apartment: {type: "number"}
       },
     },
     phones: {

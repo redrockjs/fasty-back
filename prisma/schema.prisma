@@ -66,9 +66,8 @@ model Address {
 
   region   Region @relation(fields: [regionId], references: [id])
   regionId String @map("region_id")
-  
-  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId String  @unique @map("contact_id")
+
+  contact Contact?
 }
 
 model Contact {
@@ -87,8 +86,10 @@ model Contact {
   position   Position @relation(fields: [positionId], references: [id])
   positionId String   @map("position_id")
 
-  address Address?
-  phones  Phone[]
+  addressId String  @unique @map("address_id")
+  address   Address @relation(fields: [addressId], references: [id])
+
+  phones Phone[]
 }
 
 model User {

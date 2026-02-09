@@ -38,7 +38,7 @@ export function normalizeContact(contact: ContactMapper): IContact {
       city: contact.address.city.name,
       street: contact.address.street,
       building: contact.address.building,
-      apartment: contact.address.apartment
+      apartment: contact.address.apartment,
     },
     phones: contact.phones.map(phone => ({
       type: phone.type as PhoneType,
