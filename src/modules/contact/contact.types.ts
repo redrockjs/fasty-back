@@ -4,6 +4,7 @@ interface IContact {
   midName: string | null
   lastName: string
   email: string
+  photo: string | null
   company: string
   department: string
   position: string

@@ -30,6 +30,7 @@ export function normalizeContact(contact: ContactMapper): IContact {
     midName: contact.midName,
     lastName: contact.lastName,
     email: contact.email,
+    photo: contact.photo,
     company: contact.company.name,
     department: contact.department.name,
     position: contact.position.name,

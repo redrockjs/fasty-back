@@ -67,7 +67,7 @@ export async function getContactById(id: string) {
  * Create contact in DB
  */
 export async function createContact({...props}: IContact) {
-  const {firstName, midName, lastName, email, company, department, position, address, phones} = props
+  const {firstName, midName, lastName, email, photo, company, department, position, address, phones} = props
 
   try {
     const result = await prisma.contact.create({
@@ -76,6 +76,7 @@ export async function createContact({...props}: IContact) {
         midName,
         lastName,
         email,
+        photo,
         company: {
           connectOrCreate: {
             where: {
@@ -161,7 +162,7 @@ export async function deleteContact(id: string) {
  * Update contact by ID from DB
  */
 export async function updateContact({...props}: { requestId: string } & IContact) {
-  const {requestId, firstName, midName, lastName, email, company, department, position, address, phones} = props
+  const {requestId, firstName, midName, lastName, email, photo, company, department, position, address, phones} = props
 
   try {
     return prisma.$transaction(async (tx) => {
@@ -170,6 +171,7 @@ export async function updateContact({...props}: { requestId: string } & IContact
         midName,
         lastName,
         email,
+        photo
       }
 
       if (company) {

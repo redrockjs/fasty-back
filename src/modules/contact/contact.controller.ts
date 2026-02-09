@@ -1,3 +1,8 @@
+import fs from "fs";
+import path from "path";
+import {pipeline} from "stream/promises";
+import {v4 as uuidv4} from 'uuid';
+
 import {type FastifyReply, type FastifyRequest} from "fastify";
 import {
   getAllContacts,
@@ -18,7 +23,7 @@ export async function getAllContactsHandler(request: FastifyRequest, reply: Fast
   try {
     const result = await getAllContacts()
     request.log.info(result)
-    reply.code(200).send(result)
+    return reply.code(200).send(result)
   } catch (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
@@ -35,8 +40,7 @@ export async function getContactByIdHandler(request: FastifyRequest<{
 
     const result = await getContactById(id);
     request.log.info(result)
-    reply.code(200)
-    return result
+    return reply.code(200).send(result)
   } catch (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
@@ -48,12 +52,35 @@ export async function createContactHandler(request: FastifyRequest<{
 }>, reply: FastifyReply) {
   try {
     const contact = request.body
-    const result = await createContact(contact)
-    request.log.info(result)
-    reply.code(201)
+    const files = request.filesData ?? []
 
-    return {message: 'Successfully created contact'}
-  } catch (error) {
+    const uploadDir = path.join(process.cwd(), "uploads");
+    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, {recursive: true});
+    const savedFiles: string[] = [];
+
+    const file = files[0];
+    const ext = path.extname(file.filename);
+    const photo = `${uuidv4()}${ext}`;
+    const filePath = path.join(uploadDir, photo);
+    await pipeline(
+      file.file,
+      fs.createWriteStream(filePath)
+    );
+
+    savedFiles.push(photo);
+
+    const result = await createContact({
+      ...contact,
+      photo
+    })
+    request.log.info(result)
+    return reply.code(201).send({
+      message: 'Successfully created contact',
+      result: result,
+      files: savedFiles,
+    })
+  } catch
+    (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
   }
@@ -66,9 +93,7 @@ export async function deleteContactHandler(request: FastifyRequest<{
     const {id} = request.params
     const result = await deleteContact(id)
     request.log.info(result)
-    reply.code(200)
-
-    return {message: `Successfully delete user with id: ${id} \\n ${result}`}
+    return reply.code(200).send({message: `Successfully delete user with id: ${id} \\n ${result}`})
   } catch (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});
@@ -85,9 +110,7 @@ export async function updateContactHandler(request: FastifyRequest<{
 
     const result = await updateContact({requestId, ...contact})
     request.log.info(result)
-    reply.code(200)
-
-    return {message: `Successfully updated user with id: ${requestId}`}
+    return reply.code(200).send({message: `Successfully updated user with id: ${requestId}`})
   } catch (error) {
     request.log.error(error);
     reply.code(500).send({message: "Something went wrong"});

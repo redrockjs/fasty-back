@@ -101,9 +101,9 @@ export const createContactSchema = {
         }
       ]
     },
-    response: {
-      201: serverHttpAcceptSchema,
-    }
+    // response: {
+    //   201: serverHttpAcceptSchema,
+    // }
   }
 } satisfies { schema: FastifySchema }
 
