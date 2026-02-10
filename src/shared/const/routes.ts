@@ -8,4 +8,5 @@ export const ROUTES = {
   CONTACT: '/api/contact',
   API_DOCS: '/api/docs',
   AUTH: '/api/auth',
+  EVENTS: '/api/events',
 } as const;

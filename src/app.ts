@@ -8,6 +8,7 @@ import {swaggerConfig} from "./shared/config/swagger.js";
 import {swaggerUIConfig} from "./shared/config/swagger-ui.js";
 import authPlugin from "./plugins/authPlugin.js";
 import multipartPayloadPlugin from "./plugins/multipartPayloadPlugin.js";
+import rateLimit from "@fastify/rate-limit"
 import {ROUTES} from "./shared/const/routes.js";
 import heartbeatRoutes from "./modules/heartbeat/heartbeat.route.js";
 import companyRoutes from "./modules/company/company.route.js";
@@ -17,6 +18,9 @@ import departmentRoutes from "./modules/department/department.route.js";
 import positionRoutes from "./modules/position/position.route.js";
 import contactRoutes from "./modules/contact/contact.route.js";
 import authRoutes from "./modules/auth/auth.route.js";
+import {rateLimitConfig} from "./shared/config/ratelimit.js";
+import {multipartConfig} from "./shared/config/multipart.js";
+import eventsRoutes from "./modules/events/events.route.js";
 
 dotenv.config();
 
@@ -39,12 +43,11 @@ export function buildApp(options: Partial<FastifyServerOptions> = {}) {
   fastify.register(authPlugin)
 
   // ✅ Multipart
-  fastify.register(multipart, {
-    limits: {
-      fileSize: 10 * 1024 * 1024, // 10 MB
-    }
-  });
+  fastify.register(multipart, multipartConfig);
   fastify.register(multipartPayloadPlugin);
+
+  // ✅ Rate limiter
+  fastify.register(rateLimit, rateLimitConfig)
 
 
   // ✅ Route registration
@@ -56,5 +59,7 @@ export function buildApp(options: Partial<FastifyServerOptions> = {}) {
   fastify.register(positionRoutes, {prefix: ROUTES.POSITION})             // position routes
   fastify.register(contactRoutes, {prefix: ROUTES.CONTACT})               // contact routes
   fastify.register(authRoutes, {prefix: ROUTES.AUTH})                     // auth routes
+  fastify.register(eventsRoutes, {prefix: ROUTES.EVENTS})                 // events routes
+
   return fastify;
 }
