@@ -9,6 +9,7 @@ import {swaggerUIConfig} from "./shared/config/swagger-ui.js";
 import authPlugin from "./plugins/authPlugin.js";
 import multipartPayloadPlugin from "./plugins/multipartPayloadPlugin.js";
 import rateLimit from "@fastify/rate-limit"
+import cors from '@fastify/cors'
 import websocket from '@fastify/websocket'
 import {ROUTES} from "./shared/const/routes.js";
 import heartbeatRoutes from "./modules/heartbeat/heartbeat.route.js";
@@ -24,6 +25,7 @@ import {multipartConfig} from "./shared/config/multipart.js";
 import eventsRoutes from "./modules/events/events.route.js";
 import wsRoutes from "./modules/ws/ws.route.js";
 import apiKeyGuardPlugin from "./plugins/apiKeyGuardPlugin.js";
+import {corsConfig} from "./shared/config/cors.js";
 
 dotenv.config();
 
@@ -40,6 +42,9 @@ export function buildApp(options: Partial<FastifyServerOptions> = {}) {
     if (err) throw err
     fastify.swagger()
   })
+
+  // ✅ CORS
+  fastify.register(cors, corsConfig)
 
   // ✅ Authentification
   fastify.register(jwt, {secret: process.env.JWT_SECRET!})

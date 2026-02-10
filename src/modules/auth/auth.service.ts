@@ -185,7 +185,7 @@ export async function refreshAccessToken({refreshToken}: { refreshToken: string 
     }
 
     return {
-       id: storedToken.userId,
+      id: storedToken.userId,
     }
   } catch (error) {
     prismaErrorLogger(error)

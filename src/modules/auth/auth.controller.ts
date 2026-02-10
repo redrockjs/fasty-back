@@ -29,6 +29,9 @@ export async function loginUserHandler(request: FastifyRequest<{
     })
   } catch (error) {
     request.log.error(error)
+    if (error instanceof Error && error.message === "Invalid credentials") {
+      return reply.code(403).send({message: error.message})
+    }
     return reply.code(500).send({message: "Something went wrong"});
   }
 }
