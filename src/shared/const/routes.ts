@@ -9,4 +9,5 @@ export const ROUTES = {
   API_DOCS: '/api/docs',
   AUTH: '/api/auth',
   EVENTS: '/api/events',
+  WS: '/api/ws',
 } as const;

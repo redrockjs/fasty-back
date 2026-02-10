@@ -9,6 +9,7 @@ import {swaggerUIConfig} from "./shared/config/swagger-ui.js";
 import authPlugin from "./plugins/authPlugin.js";
 import multipartPayloadPlugin from "./plugins/multipartPayloadPlugin.js";
 import rateLimit from "@fastify/rate-limit"
+import websocket from '@fastify/websocket'
 import {ROUTES} from "./shared/const/routes.js";
 import heartbeatRoutes from "./modules/heartbeat/heartbeat.route.js";
 import companyRoutes from "./modules/company/company.route.js";
@@ -21,6 +22,8 @@ import authRoutes from "./modules/auth/auth.route.js";
 import {rateLimitConfig} from "./shared/config/ratelimit.js";
 import {multipartConfig} from "./shared/config/multipart.js";
 import eventsRoutes from "./modules/events/events.route.js";
+import wsRoutes from "./modules/ws/ws.route.js";
+import apiKeyGuardPlugin from "./plugins/apiKeyGuardPlugin.js";
 
 dotenv.config();
 
@@ -49,6 +52,9 @@ export function buildApp(options: Partial<FastifyServerOptions> = {}) {
   // ✅ Rate limiter
   fastify.register(rateLimit, rateLimitConfig)
 
+  // ✅ Websocket
+  fastify.register(websocket)
+  fastify.register(apiKeyGuardPlugin)
 
   // ✅ Route registration
   fastify.register(heartbeatRoutes, {prefix: ROUTES.HEARTBEAT})           // heartbeat routes
@@ -60,6 +66,6 @@ export function buildApp(options: Partial<FastifyServerOptions> = {}) {
   fastify.register(contactRoutes, {prefix: ROUTES.CONTACT})               // contact routes
   fastify.register(authRoutes, {prefix: ROUTES.AUTH})                     // auth routes
   fastify.register(eventsRoutes, {prefix: ROUTES.EVENTS})                 // events routes
-
+  fastify.register(wsRoutes, {prefix: ROUTES.WS})                         // websocket routes
   return fastify;
 }
