@@ -1,5 +1,5 @@
 import fp from "fastify-plugin";
-import type {FastifyInstance} from "fastify";
+import type {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 import type {MultipartFile} from "@fastify/multipart";
 
 /**
@@ -19,40 +19,42 @@ import type {MultipartFile} from "@fastify/multipart";
  * @param fastify
  */
 async function multipartPayloadPlugin(fastify: FastifyInstance) {
-  fastify.addHook("preValidation",
-    async (request, reply) => {
-      if (!request.isMultipart()) return;
 
-      const parts = request.parts();
+  async function multipartProcessing(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    if (!request.isMultipart()) return;
 
-      let payload: unknown = null;
-      const files: MultipartFile[] = [];
-      const fields: Record<string, string> = {};
+    const parts = request.parts();
 
-      for await (const part of parts) {
-        if (part.type === "file") {
-          files.push(part);
-          continue;
-        }
+    let payload: unknown = null;
+    const files: MultipartFile[] = [];
+    const fields: Record<string, string> = {};
 
-        if (part.fieldname === "payload") {
-          try {
-            payload = JSON.parse(<string>part.value);
-          } catch {
-            return reply.code(400).send({
-              message: "Invalid JSON in payload"
-            });
-          }
-        } else {
-          fields[part.fieldname] = <string>part.value;
-        }
+    for await (const part of parts) {
+      if (part.type === "file") {
+        files.push(part);
+        continue;
       }
 
-      // inject into request
-      request.body = payload ?? {}; // used for AJV validation
-      request.filesData = files;        // add files array to request or use request.parts()
-      request.fieldsData = fields;      // add fields array to request or use request.parts()
-    });
+      if (part.fieldname === "payload") {
+        try {
+          payload = JSON.parse(<string>part.value);
+        } catch {
+          return reply.code(400).send({
+            message: "Invalid JSON in payload"
+          });
+        }
+      } else {
+        fields[part.fieldname] = <string>part.value;
+      }
+    }
+
+    // inject into request
+    request.body = payload ?? {}; // used for AJV validation
+    request.filesData = files;        // add files array to request or use request.parts()
+    request.fieldsData = fields;      // add fields array to request or use request.parts()
+  }
+
+  fastify.addHook("preValidation", multipartProcessing)
 }
 
 export default fp(multipartPayloadPlugin);

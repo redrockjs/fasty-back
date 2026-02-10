@@ -15,6 +15,10 @@ declare module 'fastify' {
       request: FastifyRequest,
       reply: FastifyReply
     ) => Promise<void>
+    verifyApiKey: (
+      request: FastifyRequest,
+      reply: FastifyReply
+    ) => Promise<void>;
   }
   interface FastifyRequest {
     filesData: MultipartFile[] | null;
